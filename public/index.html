@@ -3,30 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ระบบสร้างภาพประกาศแจ้งเตือน v3 | Suddhavej Hospital</title>
+<title>ระบบสร้างภาพประกาศแจ้งเตือน | Suddhavej Hospital</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:'Prompt',system-ui,sans-serif;background:#eef2f5;color:#1e293b}
-#err{display:none;position:fixed;top:0;left:0;right:0;z-index:999;background:#b91c1c;color:#fff;padding:10px 16px;font-size:13px}
+#err{display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#b91c1c;color:#fff;padding:10px 16px;font-size:13px;line-height:1.5}
 .appbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;padding:10px 16px;background:linear-gradient(90deg,#14532d,#2f7a43);color:#fff;flex-wrap:wrap}
 .appbar h1{font-size:16px;margin:0;font-weight:600;flex:1;min-width:170px}
 .appbar .sub{font-size:11px;opacity:.85;font-weight:400;display:block}
 .btn{border:0;border-radius:10px;padding:9px 14px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:#14532d}
 .btn.ghost{background:rgba(255,255,255,.16);color:#fff}
-.btn.mini{padding:5px 9px;font-size:12px;background:#f1f5f9;color:#334155}
+.btn.mini{padding:6px 9px;font-size:12px;background:#f1f5f9;color:#334155}
 .btn.danger{background:#fee2e2;color:#b91c1c}
 .btn.ok{background:#dcfce7;color:#15803d}
 .layout{display:flex;align-items:flex-start}
 #panel{width:400px;flex:none;background:#fff;border-right:1px solid #e2e8f0;height:calc(100vh - 58px);overflow-y:auto;padding:12px}
-#stage{flex:1;padding:24px;overflow:auto;height:calc(100vh - 58px);display:flex;align-items:flex-start;justify-content:center}
+#stage{flex:1;padding:24px;height:calc(100vh - 58px);overflow:auto;text-align:center}
 details{border:1px solid #e2e8f0;border-radius:12px;margin-bottom:10px;background:#fff}
 summary{cursor:pointer;padding:11px 14px;font-weight:600;font-size:14px;background:#f8fafc;border-radius:11px;list-style:none}
 summary::-webkit-details-marker{display:none}
-summary:before{content:"\25B8";margin-right:8px;color:#2f7a43;display:inline-block}
-details[open] summary:before{content:"\25BE"}
 .bd{padding:12px 14px}
 label{display:block;font-size:12px;font-weight:500;color:#475569;margin:10px 0 4px}
 input[type=text],input[type=date],input[type=file],select,textarea{width:100%;padding:8px 10px;border:1px solid #cbd5e1;border-radius:9px;font-family:inherit;font-size:13px;background:#fff}
@@ -38,6 +36,7 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
 .chk{display:flex;align-items:center;gap:8px;font-size:13px;margin:10px 0}
 .chk input{width:16px;height:16px}
 .hint{font-size:11px;color:#64748b;margin-top:6px;line-height:1.5}
+.warn{font-size:11px;color:#b45309;margin-top:6px;line-height:1.5;font-weight:500}
 .sec{border:1px solid #e2e8f0;border-radius:11px;padding:10px;margin-bottom:9px;background:#fafafa}
 .sechead{display:flex;gap:6px;align-items:center;margin-bottom:6px}
 .no{width:22px;height:22px;border-radius:50%;background:#2f7a43;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex:none}
@@ -51,13 +50,15 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
 .sw button.cus.on{border-color:#0f172a}
 .icrow{display:flex;align-items:center;gap:7px;padding:6px;border:1px solid #e2e8f0;border-radius:9px;margin-bottom:6px;background:#fafafa}
 .icbox{width:34px;height:34px;border-radius:8px;background:#2f7a43;color:#fff;display:flex;align-items:center;justify-content:center;flex:none;overflow:hidden}
-.holder{margin:0 auto;box-shadow:0 10px 25px rgba(0,0,0,.15);background:#fff}
-#wrap{transform-origin:top left}
+.bar{height:8px;border-radius:5px;background:#e2e8f0;overflow:hidden;margin-top:6px}
+.bar span{display:block;height:100%;background:#2f7a43}
+#holder{display:inline-block;overflow:hidden;background:#fff;box-shadow:0 10px 28px rgba(0,0,0,.15);vertical-align:top}
+#wrap{transform-origin:0 0}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:11px 20px;border-radius:30px;font-size:13px;z-index:99;opacity:0;transition:.3s;pointer-events:none}
 .toast.on{opacity:1}
 @media(max-width:900px){.layout{flex-direction:column}#panel{width:100%;height:auto}#stage{width:100%;height:auto;padding:14px}}
 
-.poster{position:relative;display:flex;flex-direction:column;overflow:hidden;background:#fff}
+.poster{position:relative;display:flex;flex-direction:column;overflow:hidden;background:#fff;text-align:left}
 .poster *{box-sizing:border-box}
 .deco{position:absolute;border-radius:50%}
 .logo{border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none}
@@ -97,10 +98,22 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
 <body>
 <div id="err"></div>
 
+<script>
+window.onerror = function (m, s, l) {
+  var e = document.getElementById('err');
+  if (e) {
+    e.style.display = 'block';
+    e.innerHTML = '<b>พบข้อผิดพลาด :</b> ' + m + ' &nbsp;(บรรทัดที่ ' + l + ')';
+  }
+  return false;
+};
+</script>
+
 <header class="appbar">
-  <h1>ระบบสร้างภาพประกาศแจ้งเตือน<span class="sub">Suddhavej Hospital · Alert Poster Generator v3</span></h1>
+  <h1>ระบบสร้างภาพประกาศแจ้งเตือน<span class="sub">Suddhavej Hospital - Alert Poster Generator</span></h1>
+  <button class="btn ghost" id="btnUndo">ย้อนกลับ</button>
   <button class="btn ghost" id="btnCopy">คัดลอกรูป</button>
-  <button class="btn ghost" id="btnOpen">เปิดในแท็บใหม่</button>
+  <button class="btn ghost" id="btnOpen">เปิดแท็บใหม่</button>
   <button class="btn" id="btnDl">บันทึกไฟล์</button>
 </header>
 
@@ -118,7 +131,6 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
     <option value="9:16">9:16 Story / LINE (1080 x 1920)</option>
     <option value="16:9">16:9 จอ TV (1920 x 1080)</option>
   </select>
-
   <label>ธีมสี</label>
   <div class="sw" id="thPick"></div>
   <div id="cusBox" style="display:none;margin-top:10px;border:1px solid #e2e8f0;border-radius:10px;padding:10px;background:#fafafa">
@@ -136,7 +148,6 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
     </div>
     <button class="btn mini ok" id="autoTone" style="width:100%;margin-top:10px;padding:8px">สร้างเฉดอ่อนอัตโนมัติจากสีรอง</button>
   </div>
-
   <div class="g2" style="margin-top:10px">
     <div><label>ฟอนต์</label><select data-b="font">
       <option value="Kanit">Kanit</option><option value="Prompt">Prompt</option>
@@ -144,14 +155,16 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
     <div><label>ความละเอียด</label><select data-b="scale">
       <option value="1">1x ปกติ</option><option value="2">2x คมชัด</option><option value="3">3x สำหรับพิมพ์</option></select></div>
   </div>
-
   <label>ขนาดตัวอักษรรวม : <b id="fsVal">100%</b></label>
   <input type="range" id="fsRange" min="70" max="140" step="5" value="100">
   <div class="chk"><input type="checkbox" data-b="autoFit" id="caf"><label for="caf" style="margin:0">จัดหน้าอัตโนมัติ (ย่อฟอนต์เมื่อเนื้อหาล้น)</label></div>
   <div class="hint" id="afInfo"></div>
-
   <label>ชนิดไฟล์ที่บันทึก</label>
-  <select data-b="format"><option value="png">PNG (รูปภาพคมชัด)</option><option value="jpg">JPG (ไฟล์เล็ก)</option><option value="pdf">PDF (เอกสาร/พิมพ์)</option></select>
+  <select data-b="format">
+    <option value="png">PNG (รูปภาพคมชัด)</option>
+    <option value="jpg">JPG (ไฟล์เล็ก)</option>
+    <option value="pdf">PDF (เอกสาร / สั่งพิมพ์)</option>
+  </select>
 </div></details>
 
 <details open><summary>2. หัวประกาศ</summary><div class="bd">
@@ -163,7 +176,7 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
   <div class="g2">
     <div><label>ระดับ</label><select data-b="level">
       <option value="0">1 แจ้งเพื่อทราบ</option><option value="1">2 เฝ้าระวัง</option>
-      <option value="2">3 สำคัญ</option><option value="3">4 วิกฤต/เร่งด่วน</option></select></div>
+      <option value="2">3 สำคัญ</option><option value="3">4 วิกฤต / เร่งด่วน</option></select></div>
     <div><label>ประเภทเหตุการณ์</label><input type="text" data-b="badge"></div>
   </div>
   <label>คำนำหน้าหัวข้อ</label><input type="text" data-b="titleTag">
@@ -172,7 +185,7 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
     <div><label>ไอคอนหน้าหัวข้อ</label><select data-b="iconTitle" class="icsel"></select></div>
     <div><label>ไอคอนหน้าชื่อระบบ</label><select data-b="iconSys" class="icsel"></select></div>
   </div>
-  <label>ชื่อระบบ/งาน (เว้นว่าง = ซ่อน)</label><input type="text" data-b="system">
+  <label>ชื่อระบบ / งาน (เว้นว่าง = ซ่อน)</label><input type="text" data-b="system">
 </div></details>
 
 <details open><summary>3. วัน - เวลา (ระบบ 24 ชั่วโมง)</summary><div class="bd">
@@ -185,6 +198,7 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
   <div class="g2"><select data-b="h1" class="hsel"></select><select data-b="m1" class="msel"></select></div>
   <label>เวลาสิ้นสุด</label>
   <div class="g2"><select data-b="h2" class="hsel"></select><select data-b="m2" class="msel"></select></div>
+  <div class="warn" id="timeWarn"></div>
   <div class="g2" style="margin-top:10px">
     <div><label style="margin-top:0">ไอคอนวันที่</label><select data-b="iconDate" class="icsel"></select></div>
     <div><label style="margin-top:0">ไอคอนเวลา</label><select data-b="iconTime" class="icsel"></select></div>
@@ -233,7 +247,7 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
     <label>วิธีที่ 1 : อัปโหลดรูป (PNG พื้นหลังโปร่งใสสวยที่สุด)</label>
     <input type="file" id="icFile" accept="image/*">
     <label>วิธีที่ 2 : วางโค้ด SVG path จาก feathericons.com</label>
-    <textarea id="icPath" placeholder='เช่น &lt;path d="M12 2v20"/&gt;' style="min-height:56px"></textarea>
+    <textarea id="icPath" style="min-height:56px"></textarea>
     <button class="btn mini ok" id="icAdd" style="width:100%;margin-top:8px;padding:8px">เพิ่มไอคอน</button>
   </div>
   <button class="btn mini" id="icReset" style="width:100%;margin-top:10px;padding:8px">คืนค่าไอคอนเริ่มต้น</button>
@@ -241,10 +255,13 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
 
 <details><summary>7. บันทึก / จัดการข้อมูล</summary><div class="bd">
   <label>ชื่อแบบร่าง</label>
-  <div class="g2"><input type="text" id="dName"><button class="btn mini" id="dSave">บันทึก</button></div>
+  <div class="g2"><input type="text" id="dName"><button class="btn mini ok" id="dSave">บันทึก</button></div>
   <label>แบบร่างที่บันทึกไว้</label>
   <select id="dList"></select>
   <div class="g2" style="margin-top:8px"><button class="btn mini" id="dLoad">เรียกใช้</button><button class="btn mini danger" id="dDel">ลบ</button></div>
+  <label>พื้นที่เก็บข้อมูลในเครื่อง</label>
+  <div class="bar"><span id="stBar" style="width:0%"></span></div>
+  <div class="hint" id="stTxt"></div>
   <label>สำรอง / ย้ายข้อมูล</label>
   <div class="g2"><button class="btn mini" id="expJ">ส่งออก JSON</button><button class="btn mini" id="impB">นำเข้า JSON</button></div>
   <input type="file" id="impJ" accept="application/json" hidden>
@@ -252,496 +269,1385 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
 </div></details>
 
 </aside>
-<main id="stage"><div class="holder" id="holder"><div id="wrap"><div id="poster" class="poster"></div></div></div></main>
+<main id="stage"><div id="holder"><div id="wrap"><div id="poster" class="poster"></div></div></div></main>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-window.onerror=function(m,s,l){var e=document.getElementById('err');if(e){e.style.display='block';
- e.textContent='พบข้อผิดพลาด: '+m+'  (บรรทัด '+l+')';}return false;};
-var $=function(q){return document.querySelector(q)},
-    $$=function(q,c){return Array.prototype.slice.call((c||document).querySelectorAll(q))};
+function $(q) { return document.querySelector(q); }
+function $$(q, c) { return Array.prototype.slice.call((c || document).querySelectorAll(q)); }
 
-var BASEIC={
-megaphone:{n:'ลำโพง/ประกาศ',p:'<path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14"/><path d="M15.54 8.46a5 5 0 010 7.07"/>'},
-users:{n:'กลุ่มคน/ผู้รับผลกระทบ',p:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>'},
-tool:{n:'ประแจ/ซ่อมบำรุง',p:'<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>'},
-clock:{n:'นาฬิกา/ระยะเวลา',p:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>'},
-calendar:{n:'ปฏิทิน',p:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'},
-alert:{n:'เตือนภัย',p:'<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/>'},
-shield:{n:'โล่/ความปลอดภัย',p:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'},
-check:{n:'เครื่องหมายถูก',p:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>'},
-info:{n:'ข้อมูล',p:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>'},
-bell:{n:'กระดิ่ง',p:'<path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>'},
-server:{n:'เซิร์ฟเวอร์',p:'<rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/>'},
-database:{n:'ฐานข้อมูล',p:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>'},
-wifi:{n:'เครือข่าย',p:'<path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><path d="M12 20h.01"/>'},
-refresh:{n:'รีสตาร์ท',p:'<path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>'},
-power:{n:'ปิด-เปิดระบบ',p:'<path d="M18.36 6.64a9 9 0 11-12.73 0"/><path d="M12 2v10"/>'},
-settings:{n:'ฟันเฟือง/ตั้งค่า',p:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l-.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/>'},
-file:{n:'เอกสาร',p:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/>'},
-phone:{n:'โทรศัพท์',p:'<path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.12.9.35 1.78.66 2.61a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.47-1.23a2 2 0 012.11-.45c.83.31 1.71.54 2.61.66A2 2 0 0122 16.92z"/>'},
-headset:{n:'ศูนย์บริการ',p:'<path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/>'},
-zap:{n:'ไฟฟ้า',p:'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>'},
-pin:{n:'หมุดสถานที่',p:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>'},
-heart:{n:'หัวใจ/บริการ',p:'<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>'}};
+var BASEIC = {
+  megaphone: { n: 'ลำโพง / ประกาศ', p: '<path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14"/><path d="M15.54 8.46a5 5 0 010 7.07"/>' },
+  users: { n: 'กลุ่มคน / ผู้รับผลกระทบ', p: '<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>' },
+  tool: { n: 'ประแจ / ซ่อมบำรุง', p: '<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>' },
+  clock: { n: 'นาฬิกา / ระยะเวลา', p: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>' },
+  calendar: { n: 'ปฏิทิน', p: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>' },
+  alert: { n: 'เตือนภัย', p: '<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/>' },
+  shield: { n: 'โล่ / ความปลอดภัย', p: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>' },
+  check: { n: 'เครื่องหมายถูก', p: '<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>' },
+  info: { n: 'ข้อมูล', p: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>' },
+  bell: { n: 'กระดิ่ง', p: '<path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>' },
+  server: { n: 'เซิร์ฟเวอร์', p: '<rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/>' },
+  database: { n: 'ฐานข้อมูล', p: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>' },
+  wifi: { n: 'เครือข่าย', p: '<path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><path d="M12 20h.01"/>' },
+  refresh: { n: 'รีสตาร์ท', p: '<path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>' },
+  power: { n: 'ปิด - เปิดระบบ', p: '<path d="M18.36 6.64a9 9 0 11-12.73 0"/><path d="M12 2v10"/>' },
+  settings: { n: 'ฟันเฟือง / ตั้งค่า', p: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l-.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/>' },
+  file: { n: 'เอกสาร', p: '<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/>' },
+  phone: { n: 'โทรศัพท์', p: '<path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.12.9.35 1.78.66 2.61a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.47-1.23a2 2 0 012.11-.45c.83.31 1.71.54 2.61.66A2 2 0 0122 16.92z"/>' },
+  headset: { n: 'ศูนย์บริการ', p: '<path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/>' },
+  zap: { n: 'ไฟฟ้า', p: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>' },
+  pin: { n: 'หมุดสถานที่', p: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>' },
+  heart: { n: 'หัวใจ / บริการ', p: '<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>' }
+};
 
-var KIC='sdv_icons_v3',KPR='sdv_presets_v3',KEY='sdv_state_v34',DK='sdv_drafts_v3';
-var IC={},PR={},S=null,AF=1;
+var KIC = 'sdv_icons_v42';
+var KPR = 'sdv_presets_v42';
+var KEY = 'sdv_state_v42';
+var DK = 'sdv_drafts_v42';
 
-var TH={green:{n:'เขียว',c1:'#14532d',c2:'#2f7a43',c3:'#e4f1e8',ac:'#e08a0c',bg:'#f7fbf8',dc:'#dbeee1'},
-teal:{n:'เขียวน้ำทะเล',c1:'#0f3d3e',c2:'#0e7c7b',c3:'#dff1f1',ac:'#f08c00',bg:'#f6fbfb',dc:'#cfe9e8'},
-blue:{n:'น้ำเงิน',c1:'#12395f',c2:'#1d6fb8',c3:'#e2eefa',ac:'#f59e0b',bg:'#f6faff',dc:'#d5e7f8'},
-orange:{n:'ส้ม',c1:'#7c3a06',c2:'#ea8a15',c3:'#fdeddb',ac:'#b91c1c',bg:'#fffaf5',dc:'#fbe0c4'},
-red:{n:'แดง (ด่วน)',c1:'#7f1d1d',c2:'#c62828',c3:'#fde8e8',ac:'#b45309',bg:'#fffafa',dc:'#f8d5d5'},
-purple:{n:'ม่วง',c1:'#3b1d63',c2:'#7c3aed',c3:'#ede6fb',ac:'#e08a0c',bg:'#faf8ff',dc:'#e0d4f8'}};
-var TPL={t1:'A4 แนวตั้ง<br>(แบบมาตรฐาน)',t2:'จัตุรัส 1:1<br>(โซเชียล/LINE)',t3:'แนวนอน 16:9<br>(จอ TV/สไลด์)',t4:'การ์ดมินิมอล<br>(เรียบ ทันสมัย)'};
-var LV=[{n:'แจ้งเพื่อทราบ',c:'#16a34a'},{n:'เฝ้าระวัง',c:'#eab308'},{n:'สำคัญ',c:'#f97316'},{n:'วิกฤต / เร่งด่วน',c:'#dc2626'}];
-var RC={c1:'สีหลัก (เข้ม)',c2:'สีรอง',ac:'สีเน้น',danger:'สีแดง',info:'สีฟ้า',purple:'สีม่วง'};
-var SZ={'a4':[1080,1527],'4:5':[1080,1350],'1:1':[1080,1080],'9:16':[1080,1920],'16:9':[1920,1080]};
-var MF=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-var MS=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-var ME=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var IC = {};
+var PR = {};
+var S = null;
+var AF = 1;
+var RT = null;
+var HIST = [];
 
-var BASEPR={
-'Restart Server ทำ OS Patching':{t:'Restart server HOSxP เพื่อทำ OS Patching ปิดช่องโหว่ด้านความปลอดภัย',b:'ปิดปรับปรุงระบบตามแผน',lv:1,th:'green',sys:'HOSxP / KPHIS',s:[
- {icon:'megaphone',label:'รายละเอียด / เหตุการณ์',color:'c2',text:'งานเทคโนโลยีสารสนเทศและโสตฯ มีความจำเป็นต้องดำเนินการ Restart server HOSxP ทำ OS Patching เพื่อ==ปิดช่องโหว่ด้านความปลอดภัย== ใช้เวลาดำเนินการประมาณ **15 นาที**'},
- {icon:'users',label:'ผลกระทบ',color:'ac',text:'ในขณะดำเนินการจะทำให้**ไม่สามารถเชื่อมต่อระบบ HOSxP และ KPHIS ได้**'},
- {icon:'shield',label:'การดำเนินการ / แนวทางแก้ไขป้องกัน',color:'c1',text:'ขอให้หน่วยงานที่ปฏิบัติงานในเวลาดังกล่าว บันทึกข้อมูลให้เรียบร้อย พร้อมทั้ง **Log out ก่อนเวลาดำเนินการ** และ log in เข้าระบบใหม่อีกครั้งหลังดำเนินการแล้วเสร็จ'}]},
-'ระบบ HOSxP ขัดข้อง':{t:'ระบบ HOSxP ขัดข้อง ไม่สามารถใช้งานได้ชั่วคราว',b:'ระบบขัดข้อง',lv:3,th:'red',sys:'HOSxP',s:[
- {icon:'alert',label:'เหตุการณ์ / ปัญหาที่พบ',color:'danger',text:'ตรวจพบระบบ HOSxP ==ไม่สามารถใช้งานได้== อยู่ระหว่างการตรวจสอบสาเหตุโดยทีมงานเทคโนโลยีสารสนเทศ'},
- {icon:'users',label:'ผลกระทบ / ผู้ได้รับผลกระทบ',color:'ac',text:'ทุกหน่วยงานที่ใช้งานระบบ HOSxP ไม่สามารถบันทึกและสืบค้นข้อมูลผู้ป่วยได้'},
- {icon:'tool',label:'การดำเนินการ / แนวทางแก้ไข',color:'c1',text:'ขอให้หน่วยบริการใช้**แบบฟอร์มสำรอง (Downtime Form)** บันทึกข้อมูลไว้ก่อน และบันทึกย้อนหลังเมื่อระบบกลับมาใช้งานได้'},
- {icon:'clock',label:'ระยะเวลา / สถานะ',color:'c2',text:'สถานะ : **อยู่ระหว่างแก้ไข** จะแจ้งความคืบหน้าทุก 30 นาที'}]},
-'ปิดปรับปรุงระบบตามแผน':{t:'ปิดปรับปรุงระบบประจำเดือน (Scheduled Maintenance)',b:'บำรุงรักษาตามแผน',lv:1,th:'blue',sys:'ระบบสารสนเทศโรงพยาบาล',s:[
- {icon:'settings',label:'รายละเอียดการปรับปรุง',color:'c2',text:'ดำเนินการบำรุงรักษาเครื่องแม่ข่ายและอุปกรณ์เครือข่ายตามแผนประจำปี เพื่อเพิ่มประสิทธิภาพและความมั่นคงปลอดภัยของระบบ'},
- {icon:'users',label:'ผลกระทบ',color:'ac',text:'ไม่สามารถใช้งานระบบได้ตลอดช่วงเวลาดำเนินการ'},
- {icon:'check',label:'สิ่งที่ขอความร่วมมือ',color:'c1',text:'บันทึกข้อมูลและ Log out ก่อนถึงเวลาดำเนินการ'}]},
-'แจ้งดับกระแสไฟฟ้า':{t:'แจ้งดับกระแสไฟฟ้าเพื่อบำรุงรักษาระบบไฟฟ้า',b:'ไฟฟ้าขัดข้อง',lv:2,th:'orange',sys:'ระบบไฟฟ้าอาคาร',s:[
- {icon:'zap',label:'รายละเอียดเหตุการณ์',color:'ac',text:'งานซ่อมบำรุงจะดำเนินการดับกระแสไฟฟ้าบริเวณ [พื้นที่] เพื่อบำรุงรักษาระบบไฟฟ้าประจำปี'},
- {icon:'users',label:'ผลกระทบ / ผู้ได้รับผลกระทบ',danger:'อุปกรณ์ไฟฟ้า คอมพิวเตอร์ และเครื่องปรับอากาศในพื้นที่ดังกล่าว==ไม่สามารถใช้งานได้ชั่วคราว=='},
- {icon:'shield',label:'การเตรียมความพร้อม',color:'c1',text:'ขอให้หน่วยงานเตรียมอุปกรณ์สำรองไฟ และปิดเครื่องมือแพทย์ที่ไม่จำเป็นก่อนถึงเวลาดำเนินการ'}]},
-'เครือข่ายอินเทอร์เน็ตขัดข้อง':{t:'ระบบเครือข่ายอินเทอร์เน็ตขัดข้อง',b:'เครือข่ายขัดข้อง',lv:2,th:'purple',sys:'ระบบเครือข่าย / Internet',s:[
- {icon:'wifi',label:'เหตุการณ์ / ปัญหาที่พบ',color:'purple',text:'เกิดเหตุขัดข้องของระบบเครือข่าย ทำให้การเชื่อมต่ออินเทอร์เน็ตและระบบออนไลน์ไม่เสถียร'},
- {icon:'users',label:'ผลกระทบ',color:'ac',text:'การใช้งานอินเทอร์เน็ต ระบบออนไลน์ภายนอก และการส่งข้อมูลหน่วยงานภายนอกล่าช้า'},
- {icon:'tool',label:'การดำเนินการ',color:'c1',text:'ประสานผู้ให้บริการเครือข่ายเพื่อแก้ไข และใช้เส้นทางสำรองชั่วคราว'}]},
-'ระบบกลับมาใช้งานได้ปกติ':{t:'ระบบกลับมาใช้งานได้ตามปกติแล้ว',b:'แจ้งผลการแก้ไข',lv:0,th:'green',sys:'HOSxP / KPHIS',s:[
- {icon:'check',label:'สรุปเหตุการณ์',color:'c2',text:'การดำเนินการแก้ไขเสร็จสิ้นเรียบร้อยแล้ว ระบบสามารถ**ใช้งานได้ตามปกติ**'},
- {icon:'users',label:'สิ่งที่ผู้ใช้งานต้องทำ',color:'c1',text:'กรุณา Log out และ Log in เข้าระบบใหม่อีกครั้ง หากพบความผิดปกติกรุณาแจ้งศูนย์ข้อมูล'},
- {icon:'clock',label:'ระยะเวลาที่เกิดเหตุ',color:'ac',text:'รวมระยะเวลา [xx] นาที'}]}};
+var TH = {
+  green: { n: 'เขียว', c1: '#14532d', c2: '#2f7a43', c3: '#e4f1e8', ac: '#e08a0c', bg: '#f7fbf8', dc: '#dbeee1' },
+  teal: { n: 'เขียวน้ำทะเล', c1: '#0f3d3e', c2: '#0e7c7b', c3: '#dff1f1', ac: '#f08c00', bg: '#f6fbfb', dc: '#cfe9e8' },
+  blue: { n: 'น้ำเงิน', c1: '#12395f', c2: '#1d6fb8', c3: '#e2eefa', ac: '#f59e0b', bg: '#f6faff', dc: '#d5e7f8' },
+  orange: { n: 'ส้ม', c1: '#7c3a06', c2: '#ea8a15', c3: '#fdeddb', ac: '#b91c1c', bg: '#fffaf5', dc: '#fbe0c4' },
+  red: { n: 'แดง (ด่วน)', c1: '#7f1d1d', c2: '#c62828', c3: '#fde8e8', ac: '#b45309', bg: '#fffafa', dc: '#f8d5d5' },
+  purple: { n: 'ม่วง', c1: '#3b1d63', c2: '#7c3aed', c3: '#ede6fb', ac: '#e08a0c', bg: '#faf8ff', dc: '#e0d4f8' }
+};
 
-var DEF={template:'t1',ratio:'a4',theme:'green',cus:{c1:'#14532d',c2:'#2f7a43',c3:'#e4f1e8',ac:'#e08a0c',bg:'#f7fbf8',dc:'#dbeee1'},
-font:'Kanit',scale:'2',format:'png',fontScale:100,autoFit:true,logo:'',
-orgTh:'โรงพยาบาลสุทธาเวช',orgEn:'Suddhavej Hospital',showLevel:true,level:'1',badge:'ปิดปรับปรุงระบบตามแผน',
-titleTag:'ประกาศแจ้ง :',title:'Restart server HOSxP เพื่อทำ OS Patching ปิดช่องโหว่ด้านความปลอดภัย',
-system:'HOSxP / KPHIS',showWhen:true,date:'',dateStyle:'short',h1:'22',m1:'00',h2:'22',m2:'15',customWhen:'',
-iconTitle:'alert',iconDate:'calendar',iconTime:'clock',iconSys:'settings',iconFoot:'headset',iconPhone:'phone',
-sections:[],showFoot:true,contactLabel:'สอบถาม/แจ้งปัญหา :',dept:'ศูนย์ข้อมูล งานเทคโนโลยีสารสนเทศและโสตฯ',
-place:'ชั้น 4 อาคารผู้ป่วยนอก (OPD)',phoneIn:'6790 / 7856',phoneOut:'7704',note:''};
+var TPL = {
+  t1: 'A4 แนวตั้ง<br>(แบบมาตรฐาน)',
+  t2: 'จัตุรัส 1:1<br>(โซเชียล / LINE)',
+  t3: 'แนวนอน 16:9<br>(จอ TV / สไลด์)',
+  t4: 'การ์ดมินิมอล<br>(เรียบ ทันสมัย)'
+};
 
-function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function fmt(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
- .replace(/==(.+?)==/g,'<span class="hl">$1</span>').replace(/\n/g,'<br>');}
-function hx(v){v=Math.max(0,Math.min(255,Math.round(v)));return('0'+v.toString(16)).slice(-2);}
-function mixHex(hex,p){if(!hex||hex.charAt(0)!=='#')return hex;
- var r=parseInt(hex.substr(1,2),16),g=parseInt(hex.substr(3,2),16),b=parseInt(hex.substr(5,2),16);
- return '#'+hx(r*p+255*(1-p))+hx(g*p+255*(1-p))+hx(b*p+255*(1-p));}
-function toast(m){var t=$('#toast');if(!t)return;t.textContent=m;t.className='toast on';
- clearTimeout(t._t);t._t=setTimeout(function(){t.className='toast';},2400);}
-function theme(){return S.theme==='custom'?S.cus:(TH[S.theme]||TH.green);}
-function size(){var r=S.template==='t3'?'16:9':S.ratio;return SZ[r]||SZ['a4'];}
-function col(k){var t=theme();return {c1:t.c1,c2:t.c2,ac:t.ac,danger:'#dc2626',info:'#0284c7',purple:'#7c3aed'}[k]||t.c2;}
+var LV = [
+  { n: 'แจ้งเพื่อทราบ', c: '#16a34a' },
+  { n: 'เฝ้าระวัง', c: '#eab308' },
+  { n: 'สำคัญ', c: '#f97316' },
+  { n: 'วิกฤต / เร่งด่วน', c: '#dc2626' }
+];
 
-function loadIC(){try{var v=localStorage.getItem(KIC);IC=v?JSON.parse(v):JSON.parse(JSON.stringify(BASEIC));}
- catch(e){IC=JSON.parse(JSON.stringify(BASEIC));}
- if(!IC||!Object.keys(IC).length)IC=JSON.parse(JSON.stringify(BASEIC));}
-function saveIC(){try{localStorage.setItem(KIC,JSON.stringify(IC));}catch(e){toast('พื้นที่เก็บข้อมูลเต็ม');}}
-function ic(k,sz,color){if(!k||!IC[k])return'';var o=IC[k];
- if(o.img)return '<img src="'+o.img+'" style="width:'+sz+'px;height:'+sz+'px;object-fit:contain;flex:none">';
- return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="'+(color||'currentColor')+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">'+o.p+'</svg>';}
-function icOpts(sel){var h='<option value="">- ไม่ใช้ไอคอน -</option>';
- for(var k in IC)h+='<option value="'+k+'"'+(sel===k?' selected':'')+'>'+esc(IC[k].n)+'</option>';return h;}
-function loadPR(){try{var v=localStorage.getItem(KPR);PR=v?JSON.parse(v):JSON.parse(JSON.stringify(BASEPR));}
- catch(e){PR=JSON.parse(JSON.stringify(BASEPR));}}
-function savePR(){try{localStorage.setItem(KPR,JSON.stringify(PR));}catch(e){toast('พื้นที่เก็บข้อมูลเต็ม');}}
+var RC = { c1: 'สีหลัก (เข้ม)', c2: 'สีรอง', ac: 'สีเน้น', danger: 'สีแดง', info: 'สีฟ้า', purple: 'สีม่วง' };
+var SZ = { 'a4': [1080, 1527], '4:5': [1080, 1350], '1:1': [1080, 1080], '9:16': [1080, 1920], '16:9': [1920, 1080] };
+var MF = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+var MS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+var ME = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-function when(){
- if((S.customWhen||'').trim())return{d:S.customWhen.trim(),t:''};
- var d='';
- if(S.date){var x=new Date(S.date+'T00:00:00'),D=x.getDate(),M=x.getMonth(),Y=x.getFullYear(),B=Y+543;
-  d={full:D+' '+MF[M]+' '+B,short:D+' '+MS[M]+' '+String(B).slice(2),
-     num:D+'/'+('0'+(M+1)).slice(-2)+'/'+B,eng:D+' '+ME[M]+' '+Y}[S.dateStyle]||'';}
- var t='';
- if(S.h1)t=S.h1+'.'+(S.m1||'00');
- if(t&&S.h2)t+=' - '+S.h2+'.'+(S.m2||'00');
- return{d:d,t:t};}
+var BASEPR = {};
+BASEPR['Restart Server ทำ OS Patching'] = {
+  t: 'Restart server HOSxP เพื่อทำ OS Patching ปิดช่องโหว่ด้านความปลอดภัย',
+  b: 'ปิดปรับปรุงระบบตามแผน', lv: 1, th: 'green', sys: 'HOSxP / KPHIS',
+  s: [
+    { icon: 'megaphone', label: 'รายละเอียด / เหตุการณ์', color: 'c2', text: 'งานเทคโนโลยีสารสนเทศและโสตฯ มีความจำเป็นต้องดำเนินการ Restart server HOSxP ทำ OS Patching เพื่อ==ปิดช่องโหว่ด้านความปลอดภัย== ใช้เวลาดำเนินการประมาณ **15 นาที**' },
+    { icon: 'users', label: 'ผลกระทบ', color: 'ac', text: 'ในขณะดำเนินการจะทำให้**ไม่สามารถเชื่อมต่อระบบ HOSxP และ KPHIS ได้**' },
+    { icon: 'shield', label: 'การดำเนินการ / แนวทางแก้ไขป้องกัน', color: 'c1', text: 'ขอให้หน่วยงานที่ปฏิบัติงานในเวลาดังกล่าว บันทึกข้อมูลให้เรียบร้อย พร้อมทั้ง **Log out ก่อนเวลาดำเนินการ** และ log in เข้าระบบใหม่อีกครั้งหลังดำเนินการแล้วเสร็จ' }
+  ]
+};
+BASEPR['ระบบ HOSxP ขัดข้อง'] = {
+  t: 'ระบบ HOSxP ขัดข้อง ไม่สามารถใช้งานได้ชั่วคราว',
+  b: 'ระบบขัดข้อง', lv: 3, th: 'red', sys: 'HOSxP',
+  s: [
+    { icon: 'alert', label: 'เหตุการณ์ / ปัญหาที่พบ', color: 'danger', text: 'ตรวจพบระบบ HOSxP ==ไม่สามารถใช้งานได้== อยู่ระหว่างการตรวจสอบสาเหตุโดยทีมงานเทคโนโลยีสารสนเทศ' },
+    { icon: 'users', label: 'ผลกระทบ / ผู้ได้รับผลกระทบ', color: 'ac', text: 'ทุกหน่วยงานที่ใช้งานระบบ HOSxP ไม่สามารถบันทึกและสืบค้นข้อมูลผู้ป่วยได้' },
+    { icon: 'tool', label: 'การดำเนินการ / แนวทางแก้ไข', color: 'c1', text: 'ขอให้หน่วยบริการใช้**แบบฟอร์มสำรอง (Downtime Form)** บันทึกข้อมูลไว้ก่อน และบันทึกย้อนหลังเมื่อระบบกลับมาใช้งานได้' },
+    { icon: 'clock', label: 'ระยะเวลา / สถานะ', color: 'c2', text: 'สถานะ : **อยู่ระหว่างแก้ไข** จะแจ้งความคืบหน้าทุก 30 นาที' }
+  ]
+};
+BASEPR['ปิดปรับปรุงระบบตามแผน'] = {
+  t: 'ปิดปรับปรุงระบบประจำเดือน (Scheduled Maintenance)',
+  b: 'บำรุงรักษาตามแผน', lv: 1, th: 'blue', sys: 'ระบบสารสนเทศโรงพยาบาล',
+  s: [
+    { icon: 'settings', label: 'รายละเอียดการปรับปรุง', color: 'c2', text: 'ดำเนินการบำรุงรักษาเครื่องแม่ข่ายและอุปกรณ์เครือข่ายตามแผนประจำปี เพื่อเพิ่มประสิทธิภาพและความมั่นคงปลอดภัยของระบบ' },
+    { icon: 'users', label: 'ผลกระทบ', color: 'ac', text: 'ไม่สามารถใช้งานระบบได้ตลอดช่วงเวลาดำเนินการ' },
+    { icon: 'check', label: 'สิ่งที่ขอความร่วมมือ', color: 'c1', text: 'บันทึกข้อมูลและ Log out ก่อนถึงเวลาดำเนินการ' }
+  ]
+};
+BASEPR['แจ้งดับกระแสไฟฟ้า'] = {
+  t: 'แจ้งดับกระแสไฟฟ้าเพื่อบำรุงรักษาระบบไฟฟ้า',
+  b: 'ไฟฟ้าขัดข้อง', lv: 2, th: 'orange', sys: 'ระบบไฟฟ้าอาคาร',
+  s: [
+    { icon: 'zap', label: 'รายละเอียดเหตุการณ์', color: 'ac', text: 'งานซ่อมบำรุงจะดำเนินการดับกระแสไฟฟ้าบริเวณ [พื้นที่] เพื่อบำรุงรักษาระบบไฟฟ้าประจำปี' },
+    { icon: 'users', label: 'ผลกระทบ / ผู้ได้รับผลกระทบ', color: 'danger', text: 'อุปกรณ์ไฟฟ้า คอมพิวเตอร์ และเครื่องปรับอากาศในพื้นที่ดังกล่าว==ไม่สามารถใช้งานได้ชั่วคราว==' },
+    { icon: 'shield', label: 'การเตรียมความพร้อม', color: 'c1', text: 'ขอให้หน่วยงานเตรียมอุปกรณ์สำรองไฟ และปิดเครื่องมือแพทย์ที่ไม่จำเป็นก่อนถึงเวลาดำเนินการ' }
+  ]
+};
+BASEPR['เครือข่ายอินเทอร์เน็ตขัดข้อง'] = {
+  t: 'ระบบเครือข่ายอินเทอร์เน็ตขัดข้อง',
+  b: 'เครือข่ายขัดข้อง', lv: 2, th: 'purple', sys: 'ระบบเครือข่าย / Internet',
+  s: [
+    { icon: 'wifi', label: 'เหตุการณ์ / ปัญหาที่พบ', color: 'purple', text: 'เกิดเหตุขัดข้องของระบบเครือข่าย ทำให้การเชื่อมต่ออินเทอร์เน็ตและระบบออนไลน์ไม่เสถียร' },
+    { icon: 'users', label: 'ผลกระทบ', color: 'ac', text: 'การใช้งานอินเทอร์เน็ต ระบบออนไลน์ภายนอก และการส่งข้อมูลหน่วยงานภายนอกล่าช้า' },
+    { icon: 'tool', label: 'การดำเนินการ', color: 'c1', text: 'ประสานผู้ให้บริการเครือข่ายเพื่อแก้ไข และใช้เส้นทางสำรองชั่วคราว' }
+  ]
+};
+BASEPR['ระบบกลับมาใช้งานได้ปกติ'] = {
+  t: 'ระบบกลับมาใช้งานได้ตามปกติแล้ว',
+  b: 'แจ้งผลการแก้ไข', lv: 0, th: 'green', sys: 'HOSxP / KPHIS',
+  s: [
+    { icon: 'check', label: 'สรุปเหตุการณ์', color: 'c2', text: 'การดำเนินการแก้ไขเสร็จสิ้นเรียบร้อยแล้ว ระบบสามารถ**ใช้งานได้ตามปกติ**' },
+    { icon: 'users', label: 'สิ่งที่ผู้ใช้งานต้องทำ', color: 'c1', text: 'กรุณา Log out และ Log in เข้าระบบใหม่อีกครั้ง หากพบความผิดปกติกรุณาแจ้งศูนย์ข้อมูล' },
+    { icon: 'clock', label: 'ระยะเวลาที่เกิดเหตุ', color: 'ac', text: 'รวมระยะเวลา [xx] นาที' }
+  ]
+};
 
-function build(){
- var t=theme(),T=S.template,sz=size(),W=sz[0],w=when();
- var big=(T==='t1'),k=big?1:(T==='t3'?.92:.88);
- var uf=((+S.fontScale||100)/100)*AF;
- var fs=function(n){return Math.round(n*k*uf)+'px'};
- var pad=Math.round((big?48:44)*k);
- var cw={t1:W*.70,t2:W*.70,t3:W*.48,t4:W*.86}[T]||W*.7;
+var DEF = {
+  template: 't1', ratio: 'a4', theme: 'green',
+  cus: { c1: '#14532d', c2: '#2f7a43', c3: '#e4f1e8', ac: '#e08a0c', bg: '#f7fbf8', dc: '#dbeee1' },
+  font: 'Kanit', scale: '2', format: 'png', fontScale: 100, autoFit: true, logo: '',
+  orgTh: 'โรงพยาบาลสุทธาเวช', orgEn: 'Suddhavej Hospital',
+  showLevel: true, level: '1', badge: 'ปิดปรับปรุงระบบตามแผน',
+  titleTag: 'ประกาศแจ้ง :',
+  title: 'Restart server HOSxP เพื่อทำ OS Patching ปิดช่องโหว่ด้านความปลอดภัย',
+  system: 'HOSxP / KPHIS',
+  showWhen: true, date: '', dateStyle: 'short', h1: '22', m1: '00', h2: '22', m2: '15', customWhen: '',
+  iconTitle: 'alert', iconDate: 'calendar', iconTime: 'clock', iconSys: 'settings', iconFoot: 'headset', iconPhone: 'phone',
+  sections: [], showFoot: true,
+  contactLabel: 'สอบถาม / แจ้งปัญหา :',
+  dept: 'ศูนย์ข้อมูล งานเทคโนโลยีสารสนเทศและโสตฯ',
+  place: 'ชั้น 4 อาคารผู้ป่วยนอก (OPD)',
+  phoneIn: '6790 / 7856', phoneOut: '7704', note: ''
+};
 
- var logo='<div class="logo" style="width:'+fs(100)+';height:'+fs(100)+';border:3px solid '+t.c2+'">'+
-  (S.logo?'<img src="'+S.logo+'">':'<span style="font-weight:700;color:'+t.c2+';font-size:'+fs(18)+'">LOGO</span>')+'</div>';
- var head='<div class="head">'+logo+'<div class="oline" style="background:'+t.c2+'"></div><div>'+
-  '<div class="orgth" style="font-size:'+fs(38)+';color:'+t.c1+'">'+esc(S.orgTh)+'</div>'+
-  '<div class="orgen" style="font-size:'+fs(23)+';color:'+t.c2+'">'+esc(S.orgEn)+'</div></div></div>';
-
- var lvl='';
- if(S.showLevel){var L=+S.level,dots='';
-  for(var i=0;i<4;i++)dots+='<span class="dot" style="width:'+fs(21)+';height:'+fs(21)+';background:'+(i===L?LV[i].c:mixHex(LV[i].c,.25))+'"></span>';
-  lvl='<div class="lvlw" style="margin-top:'+fs(16)+'"><div class="lvl" style="background:'+t.c3+';color:'+t.c1+';font-size:'+fs(22)+';padding:'+fs(8)+' '+fs(22)+'">'+
-   '<span>ระดับ</span><span class="dots">'+dots+'</span><span style="opacity:.35">|</span><span>'+esc(S.badge||LV[L].n)+'</span></div></div>';}
-
- var ti=ic(S.iconTitle,Math.round(66*k*uf),'#dc2626');
- var title='<div class="tbox" style="margin-top:'+fs(18)+';justify-content:'+(big?'center':'flex-start')+'">'+
-  (ti?'<span style="color:#dc2626">'+ti+'</span>':'')+'<div>'+
-  '<span class="ttag" style="font-size:'+fs(40)+'">'+esc(S.titleTag)+'</span> '+
-  '<span class="ttl" style="font-size:'+fs(35)+';color:'+t.c1+'">'+esc(S.title)+'</span></div></div>';
-
- var wh='';
- if(S.showWhen&&(w.d||w.t)){
-  var di=ic(S.iconDate,Math.round(32*k*uf),t.c2),cli=ic(S.iconTime,Math.round(32*k*uf),t.c2);
-  wh='<div class="when" style="margin-top:'+fs(16)+';font-size:'+fs(24)+';color:'+t.c1+';justify-content:'+(big?'center':'flex-start')+'">'+
-  (w.d?'<span class="it"><span style="color:'+t.c2+'">'+di+'</span>วันที่ : '+esc(w.d)+'</span>':'')+
-  (w.d&&w.t?'<span style="width:2px;height:'+fs(30)+';background:'+t.c2+';opacity:.4"></span>':'')+
-  (w.t?'<span class="it"><span style="color:'+t.c2+'">'+cli+'</span>เวลา : '+esc(w.t)+' น.</span>':'')+'</div>';}
-
- var sys='';
- if((S.system||'').trim()){var si=ic(S.iconSys,Math.round(34*k*uf),t.c2);
-  sys='<div class="sys" style="margin-top:'+fs(18)+';background:'+t.c3+';color:'+t.c1+';font-size:'+fs(30)+';padding:'+fs(11)+' '+fs(28)+'">'+
-  (si?'<span style="color:'+t.c2+'">'+si+'</span>':'')+'<span>ระบบ : '+esc(S.system)+'</span></div>';}
-
- var rows='';
- for(var j=0;j<S.sections.length;j++){
-  var s=S.sections[j],c=col(s.color);
-  var pos=s.imgPos||'auto',iw=+s.imgW||60,ar=+s.imgAR||1.5;
-  if(s.img&&pos==='auto')pos=(ar>=1.35?'top':'right');
-  var imgHtml='';
-  if(s.img){var bw=Math.round(cw*(iw/100)),bh=Math.round(bw/ar);
-   imgHtml='<img class="pimg" src="'+s.img+'" style="width:'+bw+'px;height:'+bh+'px;margin:'+fs(10)+' 0">';}
-  var plain=(T==='t4');
-  var txt=plain?('<div style="font-size:'+fs(24)+';color:#334155;line-height:1.55;white-space:pre-wrap">'+fmt(s.text)+'</div>')
-   :('<div class="rt" style="font-size:'+fs(23)+';padding:'+fs(15)+' '+fs(19)+'">'+fmt(s.text)+'</div>');
-  var body;
-  if(!s.img)body=txt;
-  else if(pos==='top')body=imgHtml+txt;
-  else if(pos==='bottom')body=txt+imgHtml;
-  else body='<div style="display:flex;gap:'+fs(14)+';align-items:flex-start;'+(pos==='left'?'':'flex-direction:row-reverse')+'">'+
-   '<div style="flex:none">'+imgHtml+'</div><div style="flex:1;min-width:0">'+txt+'</div></div>';
-
-  if(plain){rows+='<div style="border-left:8px solid '+c+';padding:2px 0 2px 22px;margin-bottom:'+fs(24)+'">'+
-    '<div style="color:'+c+';font-weight:700;font-size:'+fs(26)+';margin-bottom:8px">'+esc(s.label)+'</div>'+body+'</div>';}
-  else{var ri=ic(s.icon,Math.round(48*k*uf));
-   rows+='<div class="row" style="background:'+mixHex(c,.08)+';padding:'+fs(14)+';margin-bottom:'+fs(14)+'">'+
-    (ri?'<div class="ric" style="width:'+fs(92)+';height:'+fs(92)+';background:'+c+'">'+ri+'</div>':'')+
-    '<div class="rb"><div class="rl" style="background:'+c+';font-size:'+fs(25)+';padding:'+fs(6)+' '+fs(20)+';margin-bottom:'+fs(8)+'">'+esc(s.label)+'</div>'+
-    body+'</div></div>';}}
-
- var foot='';
- if(S.showFoot){var ph='',fi=ic(S.iconFoot,Math.round(48*k*uf)),pi=ic(S.iconPhone,Math.round(44*k*uf));
-  if(S.phoneIn||S.phoneOut){ph='<div class="fr">'+pi+
-   (S.phoneIn?'<div class="ph"><i style="font-size:'+fs(15)+'">ในเวลาโทร.</i><b style="font-size:'+fs(22)+'">'+esc(S.phoneIn)+'</b></div>':'')+
-   (S.phoneOut?'<div class="ph"><i style="font-size:'+fs(15)+'">นอกเวลาโทร.</i><b style="font-size:'+fs(22)+'">'+esc(S.phoneOut)+'</b></div>':'')+'</div>';}
-  foot='<div class="foot" style="background:'+t.c1+';padding:'+fs(22)+' '+pad+'px"><div class="fl">'+fi+
-   '<div><div class="ft" style="font-size:'+fs(20)+'">'+esc(S.contactLabel)+' '+esc(S.dept)+'</div>'+
-   (S.place?'<div class="fs" style="font-size:'+fs(18)+'">'+esc(S.place)+'</div>':'')+'</div></div>'+ph+'</div>';}
- var note=(S.note||'').trim()?'<div class="note" style="font-size:'+fs(16)+';padding:0 '+pad+'px '+fs(10)+'">'+esc(S.note)+'</div>':'';
-
- var deco='<div class="deco" style="width:'+Math.round(W*.5)+'px;height:'+Math.round(W*.5)+'px;right:-'+Math.round(W*.17)+'px;top:-'+Math.round(W*.26)+'px;background:'+t.dc+'"></div>'+
-  '<div class="deco" style="width:'+Math.round(W*.34)+'px;height:'+Math.round(W*.34)+'px;right:-'+Math.round(W*.12)+'px;top:-'+Math.round(W*.19)+'px;background:'+t.c2+';opacity:.25"></div>';
-
- if(T==='t3'){
-  var h3='<div style="width:'+Math.round(W*.4)+'px;flex:none;background:'+t.c1+';padding:'+fs(46)+' '+fs(42)+';display:flex;flex-direction:column;gap:'+fs(18)+'">'+
-   head.split('color:'+t.c1).join('color:#ffffff').split('color:'+t.c2).join('color:#bfe3c9')+
-   '<div><span class="ttag" style="font-size:'+fs(42)+';color:#ffd166">'+esc(S.titleTag)+'</span>'+
-   '<div class="ttl" style="font-size:'+fs(36)+';color:#fff;margin-top:8px;line-height:1.3">'+esc(S.title)+'</div></div>'+
-   (S.showLevel?lvl.replace('justify-content:center','justify-content:flex-start').split('background:'+t.c3).join('background:rgba(255,255,255,.14)').split('color:'+t.c1).join('color:#fff'):'')+
-   '<div style="margin-top:auto">'+wh.split('color:'+t.c1).join('color:#fff')+'</div>'+
-   (S.showFoot?'<div style="border-top:1px solid rgba(255,255,255,.25);padding-top:'+fs(14)+';color:#dbeee1;font-size:'+fs(19)+';line-height:1.5">'+
-     esc(S.contactLabel)+' '+esc(S.dept)+'<br>'+esc(S.place)+'<br><b style="color:#fff;font-size:'+fs(22)+'">'+
-     (S.phoneIn?'ในเวลา '+esc(S.phoneIn):'')+(S.phoneOut?'  นอกเวลา '+esc(S.phoneOut):'')+'</b></div>':'')+'</div>'+
-   '<div style="flex:1;padding:'+fs(40)+' '+fs(42)+';position:relative;overflow:hidden">'+deco+
-   '<div style="position:relative;z-index:2">'+sys+'<div style="margin-top:'+fs(18)+'">'+rows+'</div>'+note+'</div></div>';
-  return{html:h3,row:true,bg:t.bg};}
-
- if(T==='t4'){
-  var h4='<div style="background:'+t.c1+';padding:'+fs(38)+' '+pad+'px '+fs(32)+';position:relative;overflow:hidden">'+
-   '<div class="deco" style="width:'+Math.round(W*.4)+'px;height:'+Math.round(W*.4)+'px;right:-'+Math.round(W*.14)+'px;top:-'+Math.round(W*.2)+'px;background:rgba(255,255,255,.08)"></div>'+
-   head.split('color:'+t.c1).join('color:#ffffff').split('color:'+t.c2).join('color:#c7e6d2').split('border:3px solid '+t.c2).join('border:3px solid rgba(255,255,255,.6)').split('background:'+t.c2).join('background:rgba(255,255,255,.35)')+
-   (S.badge?'<div style="display:inline-block;background:'+t.ac+';color:#fff;font-weight:700;font-size:'+fs(21)+';padding:6px 20px;border-radius:8px;margin-top:'+fs(24)+'">'+esc(S.badge)+'</div>':'')+
-   '<div class="ttl" style="font-size:'+fs(42)+';color:#fff;margin-top:'+fs(14)+';line-height:1.28">'+esc(S.titleTag)+' '+esc(S.title)+'</div>'+
-   wh.split('color:'+t.c1).join('color:#fff').split('color:'+t.c2).join('color:'+t.ac)+'</div>'+
-   '<div style="padding:'+fs(34)+' '+pad+'px;flex:1">'+rows+'</div>'+note+foot;
-  return{html:h4,row:false,bg:'#ffffff'};}
-
- var h1=deco+'<div style="padding:'+fs(32)+' '+pad+'px 0;position:relative;z-index:2">'+head+'</div>'+lvl+
-  '<div style="padding:0 '+pad+'px">'+title+wh+'</div>'+
-  '<div style="padding:0 '+(pad+16)+'px">'+sys+'</div>'+
-  '<div class="card" style="flex:1;margin:'+fs(18)+' '+fs(30)+' '+fs(20)+';padding:'+fs(22)+';border:2px solid '+t.c3+';border-radius:26px">'+rows+'</div>'+note+foot;
- return{html:h1,row:false,bg:t.bg};}
-
-function paint(){var p=$('#poster');if(!p)return;var sz=size(),r=build();
- p.style.width=sz[0]+'px';p.style.height=sz[1]+'px';
- p.style.background=r.bg;p.style.flexDirection=r.row?'row':'column';
- p.style.fontFamily="'"+S.font+"', sans-serif";p.innerHTML=r.html;}
-
-function render(){
- try{
-  var p=$('#poster');if(!p)return;
-  var H=size()[1];AF=1;paint();
-  if(S.autoFit){var n=0;
-   while(p.scrollHeight>H+2&&AF>0.52&&n<24){AF-=0.035;n++;paint();}}
-  var info=$('#afInfo');
-  if(info)info.textContent=AF<0.999?('จัดหน้าอัตโนมัติ : ย่อฟอนต์เหลือ '+Math.round(AF*100)+'% ให้พอดีกรอบ')
-   :(p.scrollHeight>H+2?'เนื้อหาล้นกรอบ - เปิดจัดหน้าอัตโนมัติ หรือลดขนาดตัวอักษร':'เนื้อหาพอดีกรอบ');
-  fit();save();
- }catch(e){window.onerror(e.message,'',e.lineno||0);}}
-
-function fit(){
- var wr=$('#wrap'),ho=$('#holder'),st=$('#stage');if(!wr||!ho||!st)return;
- var sz=size(),W=sz[0],H=sz[1];
- var sw=st.clientWidth-48,sh=st.clientHeight-48;
- if(sw<=0)sw=800;if(sh<=0)sh=600;
- var sc=Math.min(sw/W,sh/H,1);
- if(!(sc>0))sc=0.4;
- wr.style.transform='scale('+sc+')';
- ho.style.width=(W*sc)+'px';
- ho.style.height=(H*sc)+'px';
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function picks(){
- var a='';for(var k in TPL)a+='<button data-t="'+k+'" class="'+(S.template===k?'on':'')+'">'+TPL[k]+'</button>';
- var tp=$('#tplPick');if(tp){tp.innerHTML=a;
-  $$('#tplPick button').forEach(function(b){b.onclick=function(){S.template=b.getAttribute('data-t');
-   if(S.template==='t3')S.ratio='16:9';else if(S.ratio==='16:9')S.ratio='a4';picks();form();render();};});}
- var s='';for(var j in TH)s+='<button title="'+TH[j].n+'" data-h="'+j+'" class="'+(S.theme===j?'on':'')+'" style="background:linear-gradient(135deg,'+TH[j].c1+','+TH[j].c2+')"></button>';
- s+='<button class="cus '+(S.theme==='custom'?'on':'')+'" data-h="custom">กำหนดเอง</button>';
- var tw=$('#thPick');if(tw){tw.innerHTML=s;
-  $$('#thPick button').forEach(function(b){b.onclick=function(){S.theme=b.getAttribute('data-h');picks();render();};});}
- cusUI();}
-function cusUI(){var box=$('#cusBox');if(!box)return;
- box.style.display=S.theme==='custom'?'block':'none';
- $$('[data-c]').forEach(function(el){var k=el.getAttribute('data-c');if(S.cus[k])el.value=S.cus[k];});}
-
-function form(){$$('[data-b]').forEach(function(el){var v=S[el.getAttribute('data-b')];
- if(el.type==='checkbox')el.checked=!!v;else el.value=(v==null?'':v);});
- var r=$('#fsRange');if(r){r.value=S.fontScale;var fv=$('#fsVal');if(fv)fv.textContent=S.fontScale+'%';}}
-
-function timeSel(){
- var h='<option value="">- ไม่ระบุ -</option>',m='';
- for(var i=0;i<24;i++){var v=('0'+i).slice(-2);h+='<option value="'+v+'">'+v+' น.</option>';}
- for(var j=0;j<60;j++){var u=('0'+j).slice(-2);m+='<option value="'+u+'">'+u+' นาที</option>';}
- $$('.hsel').forEach(function(e){e.innerHTML=h;});
- $$('.msel').forEach(function(e){e.innerHTML=m;});}
-
-function icSelAll(){$$('.icsel').forEach(function(e){e.innerHTML=icOpts(S[e.getAttribute('data-b')]);});}
-
-function secs(){
- var box=$('#secList');if(!box)return;var h='';
- for(var i=0;i<S.sections.length;i++){var s=S.sections[i],o2='';
-  for(var c in RC)o2+='<option value="'+c+'"'+(s.color===c?' selected':'')+'>'+RC[c]+'</option>';
-  var ps=['auto','top','bottom','left','right'],pn={auto:'วางอัตโนมัติ',top:'รูปอยู่บน',bottom:'รูปอยู่ล่าง',left:'รูปอยู่ซ้าย',right:'รูปอยู่ขวา'},o3='';
-  for(var q=0;q<ps.length;q++)o3+='<option value="'+ps[q]+'"'+((s.imgPos||'auto')===ps[q]?' selected':'')+'>'+pn[ps[q]]+'</option>';
-  h+='<div class="sec"><div class="sechead"><span class="no">'+(i+1)+'</span>'+
-   '<input type="text" value="'+esc(s.label).replace(/"/g,'&quot;')+'" data-i="'+i+'" data-k="label">'+
-   '<button class="btn mini" data-mv="-1" data-i="'+i+'">&#8593;</button>'+
-   '<button class="btn mini" data-mv="1" data-i="'+i+'">&#8595;</button>'+
-   '<button class="btn mini danger" data-del="'+i+'">&#10005;</button></div>'+
-   '<div class="g2"><select data-i="'+i+'" data-k="icon">'+icOpts(s.icon)+'</select>'+
-   '<select data-i="'+i+'" data-k="color">'+o2+'</select></div>'+
-   '<textarea data-i="'+i+'" data-k="text">'+esc(s.text)+'</textarea>'+
-   '<div class="g2" style="margin-top:7px"><input type="file" accept="image/*" data-img="'+i+'">'+
-   '<button class="btn mini danger" data-imgdel="'+i+'">ลบรูปในบล็อกนี้</button></div>'+
-   (s.img?'<div class="g2" style="margin-top:7px"><select data-i="'+i+'" data-k="imgPos">'+o3+'</select>'+
-    '<div><input type="range" min="20" max="100" step="5" value="'+(s.imgW||60)+'" data-i="'+i+'" data-k="imgW">'+
-    '<div class="hint" style="margin:0">ขนาดรูป '+(s.imgW||60)+'%</div></div></div>':'')+
-   '</div>';}
- box.innerHTML=h;
- $$('[data-k]',box).forEach(function(el){el.addEventListener('input',function(){
-  var kk=el.getAttribute('data-k'),v=el.value;
-  if(kk==='imgW'){v=+v;var hn=el.nextElementSibling;if(hn)hn.textContent='ขนาดรูป '+v+'%';}
-  S.sections[+el.getAttribute('data-i')][kk]=v;render();});});
- $$('[data-del]',box).forEach(function(b){b.onclick=function(){
-  if(S.sections.length<2){toast('ต้องมีอย่างน้อย 1 บล็อก');return;}
-  S.sections.splice(+b.getAttribute('data-del'),1);secs();render();};});
- $$('[data-mv]',box).forEach(function(b){b.onclick=function(){
-  var i=+b.getAttribute('data-i'),j=i+(+b.getAttribute('data-mv'));
-  if(j<0||j>=S.sections.length)return;var x=S.sections[i];S.sections[i]=S.sections[j];S.sections[j]=x;secs();render();};});
- $$('[data-img]',box).forEach(function(el){el.onchange=function(e){
-  var f=e.target.files[0];if(!f)return;var idx=+el.getAttribute('data-img'),r=new FileReader();
-  r.onload=function(ev){var im=new Image();im.onload=function(){
-   var mx=900,sc=Math.min(1,mx/Math.max(im.width,im.height));
-   var cv=document.createElement('canvas');cv.width=im.width*sc;cv.height=im.height*sc;
-   cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
-   S.sections[idx].img=cv.toDataURL('image/jpeg',.88);
-   S.sections[idx].imgAR=im.width/im.height;
-   if(!S.sections[idx].imgW)S.sections[idx].imgW=60;
-   if(!S.sections[idx].imgPos)S.sections[idx].imgPos='auto';
-   secs();render();toast('เพิ่มรูปแล้ว');};im.src=ev.target.result;};
-  r.readAsDataURL(f);};});
- $$('[data-imgdel]',box).forEach(function(b){b.onclick=function(){
-  S.sections[+b.getAttribute('data-imgdel')].img='';secs();render();};});}
-
-function prList(){var q=$('#quick');if(!q)return;var h='';
- for(var k in PR)h+='<option value="'+esc(k)+'">'+esc(k)+'</option>';
- q.innerHTML=h||'<option value="">- ยังไม่มีชุดเนื้อหา -</option>';}
-function applyPR(k){var o=PR[k];if(!o)return;
- S.title=o.t;S.badge=o.b;S.level=String(o.lv);S.system=o.sys;
- if(o.th&&(TH[o.th]||o.th==='custom'))S.theme=o.th;
- S.sections=JSON.parse(JSON.stringify(o.s));
- picks();form();secs();render();}
-function curPR(){return{t:S.title,b:S.badge,lv:+S.level,th:S.theme,sys:S.system,s:JSON.parse(JSON.stringify(S.sections))};}
-
-function icList(){var box=$('#icList');if(!box)return;var h='';
- for(var k in IC){h+='<div class="icrow"><span class="icbox">'+ic(k,20,'#fff')+'</span>'+
-  '<input type="text" value="'+esc(IC[k].n).replace(/"/g,'&quot;')+'" data-icn="'+k+'">'+
-  '<button class="btn mini danger" data-icd="'+k+'">&#10005;</button></div>';}
- box.innerHTML=h;
- $$('[data-icn]',box).forEach(function(el){el.addEventListener('change',function(){
-  IC[el.getAttribute('data-icn')].n=el.value;saveIC();icSelAll();secs();toast('เปลี่ยนชื่อไอคอนแล้ว');});});
- $$('[data-icd]',box).forEach(function(b){b.onclick=function(){var k=b.getAttribute('data-icd');
-  if(!confirm('ลบไอคอน "'+IC[k].n+'" ?'))return;delete IC[k];saveIC();
-  for(var i=0;i<S.sections.length;i++)if(S.sections[i].icon===k)S.sections[i].icon='';
-  ['iconTitle','iconDate','iconTime','iconSys','iconFoot','iconPhone'].forEach(function(f){if(S[f]===k)S[f]='';});
-  icList();icSelAll();secs();render();toast('ลบไอคอนแล้ว');};});}
-
-function ensure(test,urls,cb){if(test())return cb();var i=0;
- (function nx(){if(i>=urls.length){toast('โหลดไลบรารีไม่สำเร็จ เครือข่ายอาจบล็อก CDN');return;}
-  var s=document.createElement('script');s.src=urls[i++];
-  s.onload=function(){test()?cb():nx();};s.onerror=nx;document.head.appendChild(s);})();}
-function libs(needPdf,cb){
- ensure(function(){return !!window.html2canvas},
-  ['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
-   'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'],function(){
-   if(!needPdf)return cb();
-   ensure(function(){return !!(window.jspdf&&window.jspdf.jsPDF)},
-    ['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-     'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js'],cb);});}
-function shot(needPdf,cb){toast('กำลังสร้างไฟล์...');
- libs(needPdf,function(){
-  var sz=size(),W=sz[0],H=sz[1],wr=$('#wrap'),ho=$('#holder');if(!wr)return;
-  var old=wr.style.transform;
-  wr.style.transform='none';ho.style.width=W+'px';ho.style.height=H+'px';
-  var go=function(){html2canvas($('#poster'),{scale:+S.scale,backgroundColor:'#ffffff',useCORS:true,
-    logging:false,width:W,height:H,windowWidth:W,scrollX:0,scrollY:0})
-   .then(function(cv){wr.style.transform=old;fit();cb(cv);})
-   .catch(function(e){wr.style.transform=old;fit();toast('สร้างไฟล์ไม่สำเร็จ: '+e.message);});};
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){setTimeout(go,150);});else setTimeout(go,150);});}
-function fname(){var w=when(),t=(S.title||'ประกาศ').replace(/[\\\/:*?"<>|]/g,'').slice(0,40);
- return 'ประกาศ_'+t+'_'+String(w.d||S.date).replace(/[\/ ]/g,'-');}
-
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-function drafts(){try{return JSON.parse(localStorage.getItem(DK)||'{}');}catch(e){return{};}}
-function dlist(){var d=drafts(),h='<option value="">- เลือก -</option>';
- for(var k in d)h+='<option value="'+esc(k)+'">'+esc(k)+'</option>';
- var e=$('#dList');if(e)e.innerHTML=h;}
-function merge(src){var x={};for(var k in DEF)x[k]=DEF[k];for(var k2 in src)if(src[k2]!==undefined)x[k2]=src[k2];
- if(!x.cus)x.cus=JSON.parse(JSON.stringify(DEF.cus));
- if(!x.sections||!x.sections.length)x.sections=JSON.parse(JSON.stringify(BASEPR['Restart Server ทำ OS Patching'].s));
- return x;}
-
-function on(id,fn){var e=$(id);if(e)e.onclick=fn;}
-
-function wire(){
- $$('[data-b]').forEach(function(el){el.addEventListener('input',function(){
-  if(!S)return;S[el.getAttribute('data-b')]=el.type==='checkbox'?el.checked:el.value;render();});});
- $$('[data-c]').forEach(function(el){el.addEventListener('input',function(){
-  if(!S)return;S.cus[el.getAttribute('data-c')]=el.value;render();});});
- var fr=$('#fsRange');if(fr)fr.addEventListener('input',function(){
-  S.fontScale=+fr.value;var fv=$('#fsVal');if(fv)fv.textContent=S.fontScale+'%';render();});
-
- on('#autoTone',function(){S.cus.c3=mixHex(S.cus.c2,.14);S.cus.dc=mixHex(S.cus.c2,.24);
-  S.cus.bg=mixHex(S.cus.c2,.045);cusUI();render();toast('สร้างเฉดอ่อนให้แล้ว');});
- on('#addSec',function(){S.sections.push({icon:'info',label:'หัวข้อใหม่',color:'c2',text:'รายละเอียด...',img:'',imgPos:'auto',imgW:60});secs();render();});
-
- var lf=$('#logoFile');if(lf)lf.onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
-  r.onload=function(ev){var im=new Image();im.onload=function(){var m=400,sc=Math.min(1,m/Math.max(im.width,im.height));
-   var c=document.createElement('canvas');c.width=im.width*sc;c.height=im.height*sc;
-   c.getContext('2d').drawImage(im,0,0,c.width,c.height);S.logo=c.toDataURL('image/png');render();toast('อัปโหลดโลโก้แล้ว');};
-   im.src=ev.target.result;};r.readAsDataURL(f);};
- on('#logoClr',function(){S.logo='';var x=$('#logoFile');if(x)x.value='';render();});
-
- on('#pLoad',function(){var k=$('#quick').value;if(!k)return;applyPR(k);toast('เรียกใช้ชุด "'+k+'" แล้ว');});
- on('#pUpd',function(){var k=$('#quick').value;if(!k)return;
-  if(!confirm('บันทึกทับชุด "'+k+'" ด้วยเนื้อหาปัจจุบัน?'))return;PR[k]=curPR();savePR();toast('อัปเดตชุดแล้ว');});
- on('#pDel',function(){var k=$('#quick').value;if(!k)return;
-  if(!confirm('ลบชุด "'+k+'" ?'))return;delete PR[k];savePR();prList();toast('ลบชุดแล้ว');});
- on('#pNew',function(){var n=prompt('ตั้งชื่อชุดเนื้อหาใหม่',(S.title||'').slice(0,30));
-  if(!n)return;PR[n]=curPR();savePR();prList();$('#quick').value=n;toast('บันทึกชุดใหม่แล้ว');});
- on('#pRen',function(){var k=$('#quick').value;if(!k)return;var n=prompt('ชื่อใหม่',k);
-  if(!n||n===k)return;PR[n]=PR[k];delete PR[k];savePR();prList();$('#quick').value=n;toast('เปลี่ยนชื่อแล้ว');});
- on('#pReset',function(){if(!confirm('คืนค่าชุดเริ่มต้น? ชุดที่สร้างเองจะถูกลบทั้งหมด'))return;
-  PR=JSON.parse(JSON.stringify(BASEPR));savePR();prList();toast('คืนค่าแล้ว');});
-
- on('#icAdd',function(){
-  var n=$('#icName').value.trim();if(!n){toast('กรุณาตั้งชื่อไอคอน');return;}
-  var f=$('#icFile').files[0],p=$('#icPath').value.trim(),key='ic'+Date.now();
-  var after=function(){$('#icName').value='';$('#icFile').value='';$('#icPath').value='';
-   icList();icSelAll();secs();toast('เพิ่มไอคอน "'+n+'" แล้ว');};
-  if(f){var r=new FileReader();r.onload=function(ev){var im=new Image();im.onload=function(){
-    var mx=160,sc=Math.min(1,mx/Math.max(im.width,im.height));
-    var cv=document.createElement('canvas');cv.width=im.width*sc;cv.height=im.height*sc;
-    cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
-    IC[key]={n:n,img:cv.toDataURL('image/png')};saveIC();after();};im.src=ev.target.result;};
-   r.readAsDataURL(f);}
-  else if(p){IC[key]={n:n,p:p};saveIC();after();}
-  else toast('กรุณาอัปโหลดรูปหรือวาง SVG path');});
- on('#icReset',function(){if(!confirm('คืนค่าไอคอนเริ่มต้น? ไอคอนที่เพิ่มเองจะหายทั้งหมด'))return;
-  IC=JSON.parse(JSON.stringify(BASEIC));saveIC();icList();icSelAll();secs();render();toast('คืนค่าไอคอนแล้ว');});
-
- on('#btnDl',function(){var pdf=(S.format==='pdf');
-  shot(pdf,function(cv){
-   if(pdf){var sz=size(),W=sz[0],H=sz[1];
-    var doc=new window.jspdf.jsPDF({orientation:W>H?'landscape':'portrait',unit:'px',format:[W,H],compress:true});
-    doc.addImage(cv.toDataURL('image/jpeg',.94),'JPEG',0,0,W,H);doc.save(fname()+'.pdf');toast('บันทึก PDF เรียบร้อย');return;}
-   var a=document.createElement('a');a.download=fname()+'.'+S.format;
-   a.href=S.format==='jpg'?cv.toDataURL('image/jpeg',.95):cv.toDataURL('image/png');
-   document.body.appendChild(a);a.click();document.body.removeChild(a);toast('ดาวน์โหลดเรียบร้อย');});});
- on('#btnCopy',function(){shot(false,function(cv){
-  try{cv.toBlob(function(b){navigator.clipboard.write([new ClipboardItem({'image/png':b})])
-   .then(function(){toast('คัดลอกแล้ว วางใน LINE หรือ Word ได้เลย');})
-   .catch(function(){toast('เบราว์เซอร์นี้คัดลอกไม่ได้ ใช้ปุ่มบันทึกไฟล์แทน');});});}
-  catch(e){toast('เบราว์เซอร์นี้คัดลอกไม่ได้ ใช้ปุ่มบันทึกไฟล์แทน');}});});
- on('#btnOpen',function(){shot(false,function(cv){
-  var w=window.open('');if(w)w.document.write('<title>'+fname()+'</title><img src="'+cv.toDataURL()+'" style="max-width:100%">');});});
- document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='s'){
-  e.preventDefault();var d=$('#btnDl');if(d)d.click();}});
-
- on('#dSave',function(){var n=$('#dName').value.trim();if(!n){toast('กรุณาตั้งชื่อแบบร่าง');return;}
-  var d=drafts();d[n]=S;try{localStorage.setItem(DK,JSON.stringify(d));dlist();toast('บันทึกแบบร่างแล้ว');}
-  catch(e){toast('พื้นที่เต็ม ลองลบแบบร่างเก่า');}};
- on('#dLoad',function(){var n=$('#dList').value;if(!n)return;S=merge(drafts()[n]||{});
-  picks();form();secs();icSelAll();render();toast('เรียกใช้แบบร่างแล้ว');});
- on('#dDel',function(){var n=$('#dList').value;if(!n)return;var d=drafts();delete d[n];
-  localStorage.setItem(DK,JSON.stringify(d));dlist();toast('ลบแล้ว');});
- on('#expJ',function(){var a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([JSON.stringify({state:S,presets:PR,icons:IC},null,2)],{type:'application/json'}));
-  a.download=fname()+'.json';a.click();});
- on('#impB',function(){var e=$('#impJ');if(e)e.click();});
- var ij=$('#impJ');if(ij)ij.onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
-  r.onload=function(ev){try{var o=JSON.parse(ev.target.result);S=merge(o.state||o);
-   if(o.presets){PR=o.presets;savePR();}if(o.icons){IC=o.icons;saveIC();}
-   picks();form();secs();icList();icSelAll();prList();render();toast('นำเข้าข้อมูลแล้ว');}
-   catch(x){toast('ไฟล์ไม่ถูกต้อง');}};r.readAsText(f);};
- on('#reset',function(){if(!confirm('ล้างข้อมูลทั้งหมดและเริ่มใหม่?'))return;
-  localStorage.removeItem(KEY);S=merge({});S.date=new Date().toISOString().slice(0,10);
-  picks();form();secs();icList();icSelAll();render();});}
-
-function init(){
- loadIC();loadPR();
- try{var v=localStorage.getItem(KEY);if(v)S=merge(JSON.parse(v));}catch(e){localStorage.removeItem(KEY);S=merge({});}
- if(!S.date)S.date=new Date().toISOString().slice(0,10);
- if(S.fontScale==null)S.fontScale=100;
- timeSel();picks();form();secs();icList();icSelAll();prList();dlist();wire();render();
- window.addEventListener('resize',fit);
- setTimeout(fit,100);setTimeout(fit,500);
+function fmt(s) {
+  var x = esc(s);
+  x = x.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  x = x.replace(/==(.+?)==/g, '<span class="hl">$1</span>');
+  x = x.replace(/\n/g, '<br>');
+  return x;
 }
 
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+function hx(v) {
+  v = Math.max(0, Math.min(255, Math.round(v)));
+  return ('0' + v.toString(16)).slice(-2);
+}
+
+function mixHex(hex, p) {
+  if (!hex || hex.charAt(0) !== '#') { return hex; }
+  var r = parseInt(hex.substr(1, 2), 16);
+  var g = parseInt(hex.substr(3, 2), 16);
+  var b = parseInt(hex.substr(5, 2), 16);
+  return '#' + hx(r * p + 255 * (1 - p)) + hx(g * p + 255 * (1 - p)) + hx(b * p + 255 * (1 - p));
+}
+
+function toast(m) {
+  var t = $('#toast');
+  if (!t) { return; }
+  t.textContent = m;
+  t.className = 'toast on';
+  clearTimeout(t._t);
+  t._t = setTimeout(function () { t.className = 'toast'; }, 2400);
+}
+
+function theme() {
+  if (S.theme === 'custom') { return S.cus; }
+  return TH[S.theme] || TH.green;
+}
+
+function size() {
+  var r = S.template === 't3' ? '16:9' : S.ratio;
+  return SZ[r] || SZ['a4'];
+}
+
+function col(k) {
+  var t = theme();
+  var m = { c1: t.c1, c2: t.c2, ac: t.ac, danger: '#dc2626', info: '#0284c7', purple: '#7c3aed' };
+  return m[k] || t.c2;
+}
+
+function loadIC() {
+  try {
+    var v = localStorage.getItem(KIC);
+    IC = v ? JSON.parse(v) : JSON.parse(JSON.stringify(BASEIC));
+  } catch (e) {
+    IC = JSON.parse(JSON.stringify(BASEIC));
+  }
+  if (!IC || !Object.keys(IC).length) {
+    IC = JSON.parse(JSON.stringify(BASEIC));
+  }
+}
+
+function saveIC() {
+  try {
+    localStorage.setItem(KIC, JSON.stringify(IC));
+  } catch (e) {}
+}
+
+function loadPR() {
+  try {
+    var v = localStorage.getItem(KPR);
+    PR = v ? JSON.parse(v) : JSON.parse(JSON.stringify(BASEPR));
+  } catch (e) {
+    PR = JSON.parse(JSON.stringify(BASEPR));
+  }
+}
+
+function savePR() {
+  try {
+    localStorage.setItem(KPR, JSON.stringify(PR));
+  } catch (e) {}
+}
+
+function ic(k, sz, color) {
+  if (!k || !IC[k]) { return ''; }
+  var o = IC[k];
+  if (o.img) {
+    return '<img src="' + o.img + '" style="width:' + sz + 'px;height:' + sz + 'px;object-fit:contain;flex:none">';
+  }
+  var st = color || 'currentColor';
+  return '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 24 24" fill="none" stroke="' + st + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">' + o.p + '</svg>';
+}
+
+function icOpts(sel) {
+  var h = '<option value="">- ไม่ใช้ไอคอน -</option>';
+  for (var k in IC) {
+    h += '<option value="' + k + '"' + (sel === k ? ' selected' : '') + '>' + esc(IC[k].n) + '</option>';
+  }
+  return h;
+}
+
+function when() {
+  if ((S.customWhen || '').trim()) {
+    return { d: S.customWhen.trim(), t: '' };
+  }
+  var d = '';
+  if (S.date) {
+    var x = new Date(S.date + 'T00:00:00');
+    var D = x.getDate();
+    var M = x.getMonth();
+    var Y = x.getFullYear();
+    var B = Y + 543;
+    if (S.dateStyle === 'full') { d = D + ' ' + MF[M] + ' ' + B; }
+    else if (S.dateStyle === 'num') { d = D + '/' + ('0' + (M + 1)).slice(-2) + '/' + B; }
+    else if (S.dateStyle === 'eng') { d = D + ' ' + ME[M] + ' ' + Y; }
+    else { d = D + ' ' + MS[M] + ' ' + String(B).slice(2); }
+  }
+  var t = '';
+  if (S.h1) { t = S.h1 + '.' + (S.m1 || '00'); }
+  if (t && S.h2) { t += ' - ' + S.h2 + '.' + (S.m2 || '00'); }
+  return { d: d, t: t };
+}
+
+function build() {
+  var t = theme();
+  var T = S.template;
+  var sz = size();
+  var W = sz[0];
+  var w = when();
+  var big = T === 't1';
+  var k = 0.88;
+  if (big) { k = 1; }
+  else if (T === 't3') { k = 0.92; }
+  var uf = ((+S.fontScale || 100) / 100) * AF;
+
+  function fs(n) { return Math.round(n * k * uf) + 'px'; }
+
+  var pad = Math.round((big ? 48 : 44) * k);
+  var cwr = 0.70;
+  if (T === 't3') { cwr = 0.48; }
+  else if (T === 't4') { cwr = 0.86; }
+  var cw = W * cwr;
+
+  var inner = '<span style="font-weight:700;color:' + t.c2 + ';font-size:' + fs(18) + '">LOGO</span>';
+  if (S.logo) { inner = '<img src="' + S.logo + '">'; }
+  var logo = '<div class="logo" style="width:' + fs(100) + ';height:' + fs(100) + ';border:3px solid ' + t.c2 + '">' + inner + '</div>';
+
+  var head = '<div class="head">' + logo +
+    '<div class="oline" style="background:' + t.c2 + '"></div><div>' +
+    '<div class="orgth" style="font-size:' + fs(38) + ';color:' + t.c1 + '">' + esc(S.orgTh) + '</div>' +
+    '<div class="orgen" style="font-size:' + fs(23) + ';color:' + t.c2 + '">' + esc(S.orgEn) + '</div></div></div>';
+
+  var lvl = '';
+  if (S.showLevel) {
+    var L = +S.level;
+    var dots = '';
+    for (var i = 0; i < 4; i++) {
+      var dc = i === L ? LV[i].c : mixHex(LV[i].c, 0.25);
+      dots += '<span class="dot" style="width:' + fs(21) + ';height:' + fs(21) + ';background:' + dc + '"></span>';
+    }
+    lvl = '<div class="lvlw" style="margin-top:' + fs(16) + '"><div class="lvl" style="background:' + t.c3 + ';color:' + t.c1 + ';font-size:' + fs(22) + ';padding:' + fs(8) + ' ' + fs(22) + '">' +
+      '<span>ระดับ</span><span class="dots">' + dots + '</span><span style="opacity:.35">|</span><span>' + esc(S.badge || LV[L].n) + '</span></div></div>';
+  }
+
+  var ti = ic(S.iconTitle, Math.round(66 * k * uf), '#dc2626');
+  var tiw = '';
+  if (ti) { tiw = '<span style="color:#dc2626">' + ti + '</span>'; }
+  var title = '<div class="tbox" style="margin-top:' + fs(18) + ';justify-content:' + (big ? 'center' : 'flex-start') + '">' + tiw + '<div>' +
+    '<span class="ttag" style="font-size:' + fs(40) + '">' + esc(S.titleTag) + '</span> ' +
+    '<span class="ttl" style="font-size:' + fs(35) + ';color:' + t.c1 + '">' + esc(S.title) + '</span></div></div>';
+
+  var wh = '';
+  if (S.showWhen && (w.d || w.t)) {
+    var di = ic(S.iconDate, Math.round(32 * k * uf), t.c2);
+    var cli = ic(S.iconTime, Math.round(32 * k * uf), t.c2);
+    var p1 = '';
+    var p2 = '';
+    var p3 = '';
+    if (w.d) { p1 = '<span class="it"><span style="color:' + t.c2 + '">' + di + '</span>วันที่ : ' + esc(w.d) + '</span>'; }
+    if (w.d && w.t) { p2 = '<span style="width:2px;height:' + fs(30) + ';background:' + t.c2 + ';opacity:.4"></span>'; }
+    if (w.t) { p3 = '<span class="it"><span style="color:' + t.c2 + '">' + cli + '</span>เวลา : ' + esc(w.t) + ' น.</span>'; }
+    wh = '<div class="when" style="margin-top:' + fs(16) + ';font-size:' + fs(24) + ';color:' + t.c1 + ';justify-content:' + (big ? 'center' : 'flex-start') + '">' + p1 + p2 + p3 + '</div>';
+  }
+
+  var sys = '';
+  if ((S.system || '').trim()) {
+    var si = ic(S.iconSys, Math.round(34 * k * uf), t.c2);
+    var siw = '';
+    if (si) { siw = '<span style="color:' + t.c2 + '">' + si + '</span>'; }
+    sys = '<div class="sys" style="margin-top:' + fs(18) + ';background:' + t.c3 + ';color:' + t.c1 + ';font-size:' + fs(30) + ';padding:' + fs(11) + ' ' + fs(28) + '">' + siw + '<span>ระบบ : ' + esc(S.system) + '</span></div>';
+  }
+
+  var rows = '';
+  for (var j = 0; j < S.sections.length; j++) {
+    var s = S.sections[j];
+    var c = col(s.color);
+    var pos = s.imgPos || 'auto';
+    var iw = +s.imgW || 60;
+    var ar = +s.imgAR || 1.5;
+    if (s.img && pos === 'auto') {
+      pos = ar >= 1.35 ? 'top' : 'right';
+    }
+    var imgHtml = '';
+    if (s.img) {
+      var bw = Math.round(cw * (iw / 100));
+      var bh = Math.round(bw / ar);
+      imgHtml = '<img class="pimg" src="' + s.img + '" style="width:' + bw + 'px;height:' + bh + 'px;margin:' + fs(10) + ' 0">';
+    }
+    var plain = T === 't4';
+    var txt = '';
+    if (plain) {
+      txt = '<div style="font-size:' + fs(24) + ';color:#334155;line-height:1.55;white-space:pre-wrap">' + fmt(s.text) + '</div>';
+    } else {
+      txt = '<div class="rt" style="font-size:' + fs(23) + ';padding:' + fs(15) + ' ' + fs(19) + '">' + fmt(s.text) + '</div>';
+    }
+    var body = txt;
+    if (s.img) {
+      if (pos === 'top') {
+        body = imgHtml + txt;
+      } else if (pos === 'bottom') {
+        body = txt + imgHtml;
+      } else {
+        var dir = pos === 'left' ? '' : 'flex-direction:row-reverse';
+        body = '<div style="display:flex;gap:' + fs(14) + ';align-items:flex-start;' + dir + '">' +
+          '<div style="flex:none">' + imgHtml + '</div><div style="flex:1;min-width:0">' + txt + '</div></div>';
+      }
+    }
+    if (plain) {
+      rows += '<div style="border-left:8px solid ' + c + ';padding:2px 0 2px 22px;margin-bottom:' + fs(24) + '">' +
+        '<div style="color:' + c + ';font-weight:700;font-size:' + fs(26) + ';margin-bottom:8px">' + esc(s.label) + '</div>' + body + '</div>';
+    } else {
+      var ri = ic(s.icon, Math.round(48 * k * uf));
+      var riw = '';
+      if (ri) { riw = '<div class="ric" style="width:' + fs(92) + ';height:' + fs(92) + ';background:' + c + '">' + ri + '</div>'; }
+      rows += '<div class="row" style="background:' + mixHex(c, 0.08) + ';padding:' + fs(14) + ';margin-bottom:' + fs(14) + '">' + riw +
+        '<div class="rb"><div class="rl" style="background:' + c + ';font-size:' + fs(25) + ';padding:' + fs(6) + ' ' + fs(20) + ';margin-bottom:' + fs(8) + '">' + esc(s.label) + '</div>' +
+        body + '</div></div>';
+    }
+  }
+
+  var foot = '';
+  if (S.showFoot) {
+    var fi = ic(S.iconFoot, Math.round(48 * k * uf));
+    var pi = ic(S.iconPhone, Math.round(44 * k * uf));
+    var ph = '';
+    if (S.phoneIn || S.phoneOut) {
+      var a1 = '';
+      var a2 = '';
+      if (S.phoneIn) { a1 = '<div class="ph"><i style="font-size:' + fs(15) + '">ในเวลาโทร.</i><b style="font-size:' + fs(22) + '">' + esc(S.phoneIn) + '</b></div>'; }
+      if (S.phoneOut) { a2 = '<div class="ph"><i style="font-size:' + fs(15) + '">นอกเวลาโทร.</i><b style="font-size:' + fs(22) + '">' + esc(S.phoneOut) + '</b></div>'; }
+      ph = '<div class="fr">' + pi + a1 + a2 + '</div>';
+    }
+    var pl = '';
+    if (S.place) { pl = '<div class="fs" style="font-size:' + fs(18) + '">' + esc(S.place) + '</div>'; }
+    foot = '<div class="foot" style="background:' + t.c1 + ';padding:' + fs(22) + ' ' + pad + 'px"><div class="fl">' + fi +
+      '<div><div class="ft" style="font-size:' + fs(20) + '">' + esc(S.contactLabel) + ' ' + esc(S.dept) + '</div>' + pl + '</div></div>' + ph + '</div>';
+  }
+
+  var note = '';
+  if ((S.note || '').trim()) {
+    note = '<div class="note" style="font-size:' + fs(16) + ';padding:0 ' + pad + 'px ' + fs(10) + '">' + esc(S.note) + '</div>';
+  }
+
+  var d1 = Math.round(W * 0.5);
+  var d2 = Math.round(W * 0.34);
+  var deco = '<div class="deco" style="width:' + d1 + 'px;height:' + d1 + 'px;right:-' + Math.round(W * 0.17) + 'px;top:-' + Math.round(W * 0.26) + 'px;background:' + t.dc + '"></div>' +
+    '<div class="deco" style="width:' + d2 + 'px;height:' + d2 + 'px;right:-' + Math.round(W * 0.12) + 'px;top:-' + Math.round(W * 0.19) + 'px;background:' + t.c2 + ';opacity:.25"></div>';
+
+  if (T === 't3') {
+    var headL = head.split('color:' + t.c1).join('color:#ffffff').split('color:' + t.c2).join('color:#bfe3c9');
+    var lvlL = '';
+    if (S.showLevel) {
+      lvlL = lvl.replace('justify-content:center', 'justify-content:flex-start');
+      lvlL = lvlL.split('background:' + t.c3).join('background:rgba(255,255,255,.14)');
+      lvlL = lvlL.split('color:' + t.c1).join('color:#fff');
+    }
+    var whL = wh.split('color:' + t.c1).join('color:#fff');
+    var footL = '';
+    if (S.showFoot) {
+      var ln = '';
+      if (S.phoneIn) { ln += 'ในเวลา ' + esc(S.phoneIn) + '  '; }
+      if (S.phoneOut) { ln += 'นอกเวลา ' + esc(S.phoneOut); }
+      footL = '<div style="border-top:1px solid rgba(255,255,255,.25);padding-top:' + fs(14) + ';color:#dbeee1;font-size:' + fs(19) + ';line-height:1.5">' +
+        esc(S.contactLabel) + ' ' + esc(S.dept) + '<br>' + esc(S.place) + '<br><b style="color:#fff;font-size:' + fs(22) + '">' + ln + '</b></div>';
+    }
+    var left = '<div style="width:' + Math.round(W * 0.4) + 'px;flex:none;background:' + t.c1 + ';padding:' + fs(46) + ' ' + fs(42) + ';display:flex;flex-direction:column;gap:' + fs(18) + '">' +
+      headL + '<div><span class="ttag" style="font-size:' + fs(42) + ';color:#ffd166">' + esc(S.titleTag) + '</span>' +
+      '<div class="ttl" style="font-size:' + fs(36) + ';color:#fff;margin-top:8px;line-height:1.3">' + esc(S.title) + '</div></div>' +
+      lvlL + '<div style="margin-top:auto">' + whL + '</div>' + footL + '</div>';
+    var right = '<div style="flex:1;padding:' + fs(40) + ' ' + fs(42) + ';position:relative;overflow:hidden">' + deco +
+      '<div style="position:relative;z-index:2">' + sys + '<div style="margin-top:' + fs(18) + '">' + rows + '</div>' + note + '</div></div>';
+    return { html: left + right, row: true, bg: t.bg };
+  }
+
+  if (T === 't4') {
+    var headD = head.split('color:' + t.c1).join('color:#ffffff');
+    headD = headD.split('color:' + t.c2).join('color:#c7e6d2');
+    headD = headD.split('border:3px solid ' + t.c2).join('border:3px solid rgba(255,255,255,.6)');
+    headD = headD.split('background:' + t.c2).join('background:rgba(255,255,255,.35)');
+    var whD = wh.split('color:' + t.c1).join('color:#fff').split('color:' + t.c2).join('color:' + t.ac);
+    var bg4 = '';
+    if (S.badge) {
+      bg4 = '<div style="display:inline-block;background:' + t.ac + ';color:#fff;font-weight:700;font-size:' + fs(21) + ';padding:6px 20px;border-radius:8px;margin-top:' + fs(24) + '">' + esc(S.badge) + '</div>';
+    }
+    var top4 = '<div style="background:' + t.c1 + ';padding:' + fs(38) + ' ' + pad + 'px ' + fs(32) + ';position:relative;overflow:hidden">' +
+      '<div class="deco" style="width:' + Math.round(W * 0.4) + 'px;height:' + Math.round(W * 0.4) + 'px;right:-' + Math.round(W * 0.14) + 'px;top:-' + Math.round(W * 0.2) + 'px;background:rgba(255,255,255,.08)"></div>' +
+      headD + bg4 +
+      '<div class="ttl" style="font-size:' + fs(42) + ';color:#fff;margin-top:' + fs(14) + ';line-height:1.28">' + esc(S.titleTag) + ' ' + esc(S.title) + '</div>' +
+      whD + '</div>';
+    var mid4 = '<div style="padding:' + fs(34) + ' ' + pad + 'px;flex:1">' + rows + '</div>';
+    return { html: top4 + mid4 + note + foot, row: false, bg: '#ffffff' };
+  }
+
+  var a = deco + '<div style="padding:' + fs(32) + ' ' + pad + 'px 0;position:relative;z-index:2">' + head + '</div>' + lvl;
+  var b = '<div style="padding:0 ' + pad + 'px">' + title + wh + '</div>';
+  var cD = '<div style="padding:0 ' + (pad + 16) + 'px">' + sys + '</div>';
+  var d = '<div class="card" style="flex:1;margin:' + fs(18) + ' ' + fs(30) + ' ' + fs(20) + ';padding:' + fs(22) + ';border:2px solid ' + t.c3 + ';border-radius:26px">' + rows + '</div>';
+  return { html: a + b + cD + d + note + foot, row: false, bg: t.bg };
+}
+
+function paint() {
+  var p = $('#poster');
+  if (!p) { return; }
+  var sz = size();
+  var r = build();
+  p.style.width = sz[0] + 'px';
+  p.style.height = sz[1] + 'px';
+  p.style.background = r.bg;
+  p.style.flexDirection = r.row ? 'row' : 'column';
+  p.style.fontFamily = "'" + S.font + "', sans-serif";
+  p.innerHTML = r.html;
+}
+
+function fit() {
+  var wr = $('#wrap');
+  var ho = $('#holder');
+  var st = $('#stage');
+  if (!wr || !ho || !st) { return; }
+  var sz = size();
+  var W = sz[0];
+  var H = sz[1];
+  var sw = st.clientWidth - 48;
+  var sh = st.clientHeight - 48;
+  if (!sw || sw < 120) { sw = 700; }
+  if (!sh || sh < 120) { sh = 600; }
+  var sc = Math.min(sw / W, sh / H);
+  if (sc > 1) { sc = 1; }
+  if (!(sc > 0.05)) { sc = 0.4; }
+  wr.style.transform = 'scale(' + sc + ')';
+  ho.style.width = Math.round(W * sc) + 'px';
+  ho.style.height = Math.round(H * sc) + 'px';
+}
+
+function render() {
+  try {
+    var p = $('#poster');
+    if (!p || !S) { return; }
+    var H = size()[1];
+    AF = 1;
+    paint();
+    if (S.autoFit) {
+      var n = 0;
+      while (p.scrollHeight > H + 2 && AF > 0.52 && n < 24) {
+        AF -= 0.035;
+        n++;
+        paint();
+      }
+    }
+    var info = $('#afInfo');
+    if (info) {
+      if (AF < 0.999) {
+        info.textContent = 'จัดหน้าอัตโนมัติ : ย่อฟอนต์เหลือ ' + Math.round(AF * 100) + '% ให้พอดีกรอบ';
+      } else if (p.scrollHeight > H + 2) {
+        info.textContent = 'เนื้อหาล้นกรอบ - เปิดจัดหน้าอัตโนมัติ หรือลดขนาดตัวอักษร';
+      } else {
+        info.textContent = 'เนื้อหาพอดีกรอบ';
+      }
+    }
+    checkTime();
+    fit();
+    save();
+  } catch (e) {
+    window.onerror(e.message, '', 0);
+  }
+}
+
+function renderSoon() {
+  clearTimeout(RT);
+  RT = setTimeout(render, 90);
+}
+
+function checkTime() {
+  var el = $('#timeWarn');
+  if (!el) { return; }
+  el.textContent = '';
+  if (S.h1 && S.h2) {
+    var a = (+S.h1) * 60 + (+(S.m1 || 0));
+    var b = (+S.h2) * 60 + (+(S.m2 || 0));
+    if (b < a) {
+      el.textContent = 'หมายเหตุ : เวลาสิ้นสุดน้อยกว่าเวลาเริ่ม ระบบเข้าใจว่าเป็นการข้ามวัน';
+    }
+  }
+}
+
+function picks() {
+  var a = '';
+  for (var k in TPL) {
+    a += '<button data-t="' + k + '" class="' + (S.template === k ? 'on' : '') + '">' + TPL[k] + '</button>';
+  }
+  var tp = $('#tplPick');
+  if (tp) {
+    tp.innerHTML = a;
+    $$('#tplPick button').forEach(function (b) {
+      b.onclick = function () {
+        S.template = b.getAttribute('data-t');
+        if (S.template === 't3') {
+          S.ratio = '16:9';
+        } else if (S.ratio === '16:9') {
+          S.ratio = 'a4';
+        }
+        picks();
+        form();
+        render();
+      };
+    });
+  }
+  var s = '';
+  for (var j in TH) {
+    s += '<button title="' + TH[j].n + '" data-h="' + j + '" class="' + (S.theme === j ? 'on' : '') + '" style="background:linear-gradient(135deg,' + TH[j].c1 + ',' + TH[j].c2 + ')"></button>';
+  }
+  s += '<button class="cus ' + (S.theme === 'custom' ? 'on' : '') + '" data-h="custom">กำหนดเอง</button>';
+  var tw = $('#thPick');
+  if (tw) {
+    tw.innerHTML = s;
+    $$('#thPick button').forEach(function (b) {
+      b.onclick = function () {
+        S.theme = b.getAttribute('data-h');
+        picks();
+        render();
+      };
+    });
+  }
+  cusUI();
+}
+
+function cusUI() {
+  var box = $('#cusBox');
+  if (!box) { return; }
+  box.style.display = S.theme === 'custom' ? 'block' : 'none';
+  $$('[data-c]').forEach(function (el) {
+    var k = el.getAttribute('data-c');
+    if (S.cus && S.cus[k]) { el.value = S.cus[k]; }
+  });
+}
+
+function form() {
+  $$('[data-b]').forEach(function (el) {
+    var v = S[el.getAttribute('data-b')];
+    if (el.type === 'checkbox') {
+      el.checked = !!v;
+    } else {
+      el.value = v == null ? '' : v;
+    }
+  });
+  var r = $('#fsRange');
+  if (r) {
+    r.value = S.fontScale;
+    var fv = $('#fsVal');
+    if (fv) { fv.textContent = S.fontScale + '%'; }
+  }
+}
+
+function timeSel() {
+  var h = '<option value="">- ไม่ระบุ -</option>';
+  var m = '';
+  for (var i = 0; i < 24; i++) {
+    var v = ('0' + i).slice(-2);
+    h += '<option value="' + v + '">' + v + ' น.</option>';
+  }
+  for (var j = 0; j < 60; j++) {
+    var u = ('0' + j).slice(-2);
+    m += '<option value="' + u + '">' + u + ' นาที</option>';
+  }
+  $$('.hsel').forEach(function (e) { e.innerHTML = h; });
+  $$('.msel').forEach(function (e) { e.innerHTML = m; });
+}
+
+function icSelAll() {
+  $$('.icsel').forEach(function (e) {
+    e.innerHTML = icOpts(S[e.getAttribute('data-b')]);
+  });
+}
+
+function secs() {
+  var box = $('#secList');
+  if (!box) { return; }
+  var ps = ['auto', 'top', 'bottom', 'left', 'right'];
+  var pn = { auto: 'วางอัตโนมัติ', top: 'รูปอยู่บน', bottom: 'รูปอยู่ล่าง', left: 'รูปอยู่ซ้าย', right: 'รูปอยู่ขวา' };
+  var h = '';
+  for (var i = 0; i < S.sections.length; i++) {
+    var s = S.sections[i];
+    var o2 = '';
+    for (var c in RC) {
+      o2 += '<option value="' + c + '"' + (s.color === c ? ' selected' : '') + '>' + RC[c] + '</option>';
+    }
+    var o3 = '';
+    for (var q = 0; q < ps.length; q++) {
+      var cur = s.imgPos || 'auto';
+      o3 += '<option value="' + ps[q] + '"' + (cur === ps[q] ? ' selected' : '') + '>' + pn[ps[q]] + '</option>';
+    }
+    h += '<div class="sec">';
+    h += '<div class="sechead"><span class="no">' + (i + 1) + '</span>';
+    h += '<input type="text" value="' + esc(s.label).replace(/"/g, '&quot;') + '" data-i="' + i + '" data-k="label">';
+    h += '<button class="btn mini" data-mv="-1" data-i="' + i + '">&#8593;</button>';
+    h += '<button class="btn mini" data-mv="1" data-i="' + i + '">&#8595;</button>';
+    h += '<button class="btn mini danger" data-del="' + i + '">&#10005;</button></div>';
+    h += '<div class="g2"><select data-i="' + i + '" data-k="icon">' + icOpts(s.icon) + '</select>';
+    h += '<select data-i="' + i + '" data-k="color">' + o2 + '</select></div>';
+    h += '<textarea data-i="' + i + '" data-k="text">' + esc(s.text) + '</textarea>';
+    h += '<div class="g2" style="margin-top:7px"><input type="file" accept="image/*" data-img="' + i + '">';
+    h += '<button class="btn mini danger" data-imgdel="' + i + '">ลบรูปในบล็อกนี้</button></div>';
+    if (s.img) {
+      h += '<div class="g2" style="margin-top:7px"><select data-i="' + i + '" data-k="imgPos">' + o3 + '</select>';
+      h += '<div><input type="range" min="20" max="100" step="5" value="' + (s.imgW || 60) + '" data-i="' + i + '" data-k="imgW">';
+      h += '<div class="hint" style="margin:0">ขนาดรูป ' + (s.imgW || 60) + '%</div></div></div>';
+    }
+    h += '</div>';
+  }
+  box.innerHTML = h;
+
+  $$('[data-k]', box).forEach(function (el) {
+    el.addEventListener('input', function () {
+      var kk = el.getAttribute('data-k');
+      var v = el.value;
+      if (kk === 'imgW') {
+        v = +v;
+        var hn = el.nextElementSibling;
+        if (hn) { hn.textContent = 'ขนาดรูป ' + v + '%'; }
+      }
+      S.sections[+el.getAttribute('data-i')][kk] = v;
+      renderSoon();
+    });
+  });
+
+  $$('[data-del]', box).forEach(function (b) {
+    b.onclick = function () {
+      if (S.sections.length < 2) {
+        toast('ต้องมีอย่างน้อย 1 บล็อก');
+        return;
+      }
+      S.sections.splice(+b.getAttribute('data-del'), 1);
+      secs();
+      render();
+    };
+  });
+
+  $$('[data-mv]', box).forEach(function (b) {
+    b.onclick = function () {
+      var i = +b.getAttribute('data-i');
+      var j = i + (+b.getAttribute('data-mv'));
+      if (j < 0 || j >= S.sections.length) { return; }
+      var x = S.sections[i];
+      S.sections[i] = S.sections[j];
+      S.sections[j] = x;
+      secs();
+      render();
+    };
+  });
+
+  $$('[data-img]', box).forEach(function (el) {
+    el.onchange = function (e) {
+      var f = e.target.files[0];
+      if (!f) { return; }
+      var idx = +el.getAttribute('data-img');
+      var r = new FileReader();
+      r.onload = function (ev) {
+        var im = new Image();
+        im.onload = function () {
+          var mx = 800;
+          var sc = Math.min(1, mx / Math.max(im.width, im.height));
+          var cv = document.createElement('canvas');
+          cv.width = Math.round(im.width * sc);
+          cv.height = Math.round(im.height * sc);
+          cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+          S.sections[idx].img = cv.toDataURL('image/jpeg', 0.82);
+          S.sections[idx].imgAR = im.width / im.height;
+          if (!S.sections[idx].imgW) { S.sections[idx].imgW = 60; }
+          if (!S.sections[idx].imgPos) { S.sections[idx].imgPos = 'auto'; }
+          secs();
+          render();
+          toast('เพิ่มรูปแล้ว');
+        };
+        im.src = ev.target.result;
+      };
+      r.readAsDataURL(f);
+    };
+  });
+
+  $$('[data-imgdel]', box).forEach(function (b) {
+    b.onclick = function () {
+      S.sections[+b.getAttribute('data-imgdel')].img = '';
+      secs();
+      render();
+    };
+  });
+}
+
+function prList() {
+  var q = $('#quick');
+  if (!q) { return; }
+  var h = '';
+  for (var k in PR) {
+    h += '<option value="' + esc(k) + '">' + esc(k) + '</option>';
+  }
+  if (!h) { h = '<option value="">- ยังไม่มีชุดเนื้อหา -</option>'; }
+  q.innerHTML = h;
+}
+
+function applyPR(k) {
+  var o = PR[k];
+  if (!o) { return; }
+  S.title = o.t;
+  S.badge = o.b;
+  S.level = String(o.lv);
+  S.system = o.sys;
+  if (o.th && (TH[o.th] || o.th === 'custom')) { S.theme = o.th; }
+  S.sections = JSON.parse(JSON.stringify(o.s));
+  picks();
+  form();
+  secs();
+  render();
+}
+
+function curPR() {
+  return {
+    t: S.title,
+    b: S.badge,
+    lv: +S.level,
+    th: S.theme,
+    sys: S.system,
+    s: JSON.parse(JSON.stringify(S.sections))
+  };
+}
+
+function icList() {
+  var box = $('#icList');
+  if (!box) { return; }
+  var h = '';
+  for (var k in IC) {
+    h += '<div class="icrow"><span class="icbox">' + ic(k, 20, '#fff') + '</span>';
+    h += '<input type="text" value="' + esc(IC[k].n).replace(/"/g, '&quot;') + '" data-icn="' + k + '">';
+    h += '<button class="btn mini danger" data-icd="' + k + '">&#10005;</button></div>';
+  }
+  box.innerHTML = h;
+
+  $$('[data-icn]', box).forEach(function (el) {
+    el.addEventListener('change', function () {
+      IC[el.getAttribute('data-icn')].n = el.value;
+      saveIC();
+      icSelAll();
+      secs();
+      toast('เปลี่ยนชื่อไอคอนแล้ว');
+    });
+  });
+
+  $$('[data-icd]', box).forEach(function (b) {
+    b.onclick = function () {
+      var k = b.getAttribute('data-icd');
+      if (!confirm('ลบไอคอน "' + IC[k].n + '" ?')) { return; }
+      delete IC[k];
+      saveIC();
+      for (var i = 0; i < S.sections.length; i++) {
+        if (S.sections[i].icon === k) { S.sections[i].icon = ''; }
+      }
+      var flds = ['iconTitle', 'iconDate', 'iconTime', 'iconSys', 'iconFoot', 'iconPhone'];
+      for (var f = 0; f < flds.length; f++) {
+        if (S[flds[f]] === k) { S[flds[f]] = ''; }
+      }
+      icList();
+      icSelAll();
+      secs();
+      render();
+      toast('ลบไอคอนแล้ว');
+    };
+  });
+}
+
+function ensure(test, urls, cb) {
+  if (test()) { return cb(); }
+  var i = 0;
+  function nx() {
+    if (i >= urls.length) {
+      toast('โหลดไลบรารีไม่สำเร็จ เครือข่ายอาจบล็อก CDN');
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = urls[i];
+    i++;
+    s.onload = function () {
+      if (test()) { cb(); } else { nx(); }
+    };
+    s.onerror = nx;
+    document.head.appendChild(s);
+  }
+  nx();
+}
+
+function libs(needPdf, cb) {
+  var u1 = ['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+    'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'];
+  var u2 = ['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+    'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js'];
+  ensure(function () { return !!window.html2canvas; }, u1, function () {
+    if (!needPdf) { return cb(); }
+    ensure(function () { return !!(window.jspdf && window.jspdf.jsPDF); }, u2, cb);
+  });
+}
+
+function shot(needPdf, cb) {
+  toast('กำลังสร้างไฟล์...');
+  libs(needPdf, function () {
+    var sz = size();
+    var W = sz[0];
+    var H = sz[1];
+    var wr = $('#wrap');
+    var ho = $('#holder');
+    if (!wr || !ho) { return; }
+    var old = wr.style.transform;
+    wr.style.transform = 'none';
+    ho.style.width = W + 'px';
+    ho.style.height = H + 'px';
+    function go() {
+      html2canvas($('#poster'), {
+        scale: +S.scale,
+        backgroundColor: '#ffffff',
+        useCORS: true,
+        logging: false,
+        width: W,
+        height: H,
+        windowWidth: W,
+        scrollX: 0,
+        scrollY: 0
+      }).then(function (cv) {
+        wr.style.transform = old;
+        fit();
+        cb(cv);
+      }).catch(function (e) {
+        wr.style.transform = old;
+        fit();
+        toast('สร้างไฟล์ไม่สำเร็จ : ' + e.message);
+      });
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { setTimeout(go, 150); });
+    } else {
+      setTimeout(go, 150);
+    }
+  });
+}
+
+function fname() {
+  var w = when();
+  var t = (S.title || 'ประกาศ').replace(/[\\\/:*?"<>|]/g, '').slice(0, 40);
+  var d = String(w.d || S.date).replace(/[\/ ]/g, '-');
+  return 'ประกาศ_' + t + '_' + d;
+}
+
+function save() {
+  try {
+    var js = JSON.stringify(S);
+    try { localStorage.setItem(KEY, js); } catch (e) {}
+    if (!HIST.length || HIST[HIST.length - 1] !== js) {
+      HIST.push(js);
+      if (HIST.length > 15) { HIST.shift(); }
+    }
+    meter();
+  } catch (e) {}
+}
+
+function meter() {
+  var bar = $('#stBar');
+  var txt = $('#stTxt');
+  if (!bar || !txt) { return; }
+  var keys = [KEY, KPR, KIC, DK];
+  var total = 0;
+  for (var i = 0; i < keys.length; i++) {
+    try {
+      var v = localStorage.getItem(keys[i]);
+      if (v) { total += v.length; }
+    } catch (e) {}
+  }
+  var mb = total / 1048576;
+  var pct = Math.min(100, Math.round((mb / 5) * 100));
+  bar.style.width = pct + '%';
+  if (pct > 80) {
+    bar.style.background = '#dc2626';
+  } else if (pct > 60) {
+    bar.style.background = '#f59e0b';
+  } else {
+    bar.style.background = '#2f7a43';
+  }
+  var warn = '';
+  if (pct > 80) { warn = ' - ใกล้เต็ม ควรลบรูปหรือแบบร่างเก่า'; }
+  txt.textContent = 'ใช้ไป ' + mb.toFixed(2) + ' MB จากประมาณ 5 MB (' + pct + '%)' + warn;
+}
+
+function drafts() {
+  try {
+    return JSON.parse(localStorage.getItem(DK) || '{}');
+  } catch (e) {
+    return {};
+  }
+}
+
+function dlist() {
+  var d = drafts();
+  var h = '<option value="">- เลือก -</option>';
+  for (var k in d) {
+    h += '<option value="' + esc(k) + '">' + esc(k) + '</option>';
+  }
+  var e = $('#dList');
+  if (e) { e.innerHTML = h; }
+}
+
+function merge(src) {
+  var x = {};
+  for (var k in DEF) { x[k] = DEF[k]; }
+  if (src) {
+    for (var k2 in src) {
+      if (src[k2] !== undefined) { x[k2] = src[k2]; }
+    }
+  }
+  if (!x.cus) { x.cus = JSON.parse(JSON.stringify(DEF.cus)); }
+  if (!x.sections || !x.sections.length) {
+    x.sections = JSON.parse(JSON.stringify(BASEPR['Restart Server ทำ OS Patching'].s));
+  }
+  return x;
+}
+
+function refreshAll() {
+  picks();
+  form();
+  secs();
+  icList();
+  icSelAll();
+  prList();
+  dlist();
+  render();
+}
+
+function on(id, fn) {
+  var e = $(id);
+  if (e) { e.onclick = fn; }
+}
+
+function wire() {
+  $$('[data-b]').forEach(function (el) {
+    el.addEventListener('input', function () {
+      if (!S) { return; }
+      var key = el.getAttribute('data-b');
+      S[key] = el.type === 'checkbox' ? el.checked : el.value;
+      renderSoon();
+    });
+  });
+
+  $$('[data-c]').forEach(function (el) {
+    el.addEventListener('input', function () {
+      if (!S) { return; }
+      S.cus[el.getAttribute('data-c')] = el.value;
+      renderSoon();
+    });
+  });
+
+  var fr = $('#fsRange');
+  if (fr) {
+    fr.addEventListener('input', function () {
+      S.fontScale = +fr.value;
+      var fv = $('#fsVal');
+      if (fv) { fv.textContent = S.fontScale + '%'; }
+      renderSoon();
+    });
+  }
+
+  on('#autoTone', function () {
+    S.cus.c3 = mixHex(S.cus.c2, 0.14);
+    S.cus.dc = mixHex(S.cus.c2, 0.24);
+    S.cus.bg = mixHex(S.cus.c2, 0.045);
+    cusUI();
+    render();
+    toast('สร้างเฉดอ่อนให้แล้ว');
+  });
+
+  on('#addSec', function () {
+    S.sections.push({ icon: 'info', label: 'หัวข้อใหม่', color: 'c2', text: 'รายละเอียด...', img: '', imgPos: 'auto', imgW: 60 });
+    secs();
+    render();
+  });
+
+  var lf = $('#logoFile');
+  if (lf) {
+    lf.onchange = function (e) {
+      var f = e.target.files[0];
+      if (!f) { return; }
+      var r = new FileReader();
+      r.onload = function (ev) {
+        var im = new Image();
+        im.onload = function () {
+          var m = 360;
+          var sc = Math.min(1, m / Math.max(im.width, im.height));
+          var c = document.createElement('canvas');
+          c.width = Math.round(im.width * sc);
+          c.height = Math.round(im.height * sc);
+          c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+          S.logo = c.toDataURL('image/png');
+          render();
+          toast('อัปโหลดโลโก้แล้ว');
+        };
+        im.src = ev.target.result;
+      };
+      r.readAsDataURL(f);
+    };
+  }
+
+  on('#logoClr', function () {
+    S.logo = '';
+    var x = $('#logoFile');
+    if (x) { x.value = ''; }
+    render();
+  });
+
+  on('#pLoad', function () {
+    var k = $('#quick').value;
+    if (!k) { return; }
+    applyPR(k);
+    toast('เรียกใช้ชุดเนื้อหาแล้ว');
+  });
+
+  on('#pUpd', function () {
+    var k = $('#quick').value;
+    if (!k) { return; }
+    if (!confirm('บันทึกทับชุดนี้ด้วยเนื้อหาปัจจุบัน?')) { return; }
+    PR[k] = curPR();
+    savePR();
+    toast('อัปเดตชุดแล้ว');
+  });
+
+  on('#pDel', function () {
+    var k = $('#quick').value;
+    if (!k) { return; }
+    if (!confirm('ลบชุดนี้?')) { return; }
+    delete PR[k];
+    savePR();
+    prList();
+    toast('ลบชุดแล้ว');
+  });
+
+  on('#pNew', function () {
+    var n = prompt('ตั้งชื่อชุดเนื้อหาใหม่', (S.title || '').slice(0, 30));
+    if (!n) { return; }
+    PR[n] = curPR();
+    savePR();
+    prList();
+    $('#quick').value = n;
+    toast('บันทึกชุดใหม่แล้ว');
+  });
+
+  on('#pRen', function () {
+    var k = $('#quick').value;
+    if (!k) { return; }
+    var n = prompt('ชื่อใหม่', k);
+    if (!n || n === k) { return; }
+    PR[n] = PR[k];
+    delete PR[k];
+    savePR();
+    prList();
+    $('#quick').value = n;
+    toast('เปลี่ยนชื่อแล้ว');
+  });
+
+  on('#pReset', function () {
+    if (!confirm('คืนค่าชุดเริ่มต้น? ชุดที่สร้างเองจะถูกลบทั้งหมด')) { return; }
+    PR = JSON.parse(JSON.stringify(BASEPR));
+    savePR();
+    prList();
+    toast('คืนค่าแล้ว');
+  });
+
+  on('#icAdd', function () {
+    var n = $('#icName').value.trim();
+    if (!n) {
+      toast('กรุณาตั้งชื่อไอคอน');
+      return;
+    }
+    var f = $('#icFile').files[0];
+    var p = $('#icPath').value.trim();
+    var key = 'ic' + Date.now();
+    function after() {
+      $('#icName').value = '';
+      $('#icFile').value = '';
+      $('#icPath').value = '';
+      icList();
+      icSelAll();
+      secs();
+      toast('เพิ่มไอคอนแล้ว');
+    }
+    if (f) {
+      var r = new FileReader();
+      r.onload = function (ev) {
+        var im = new Image();
+        im.onload = function () {
+          var mx = 140;
+          var sc = Math.min(1, mx / Math.max(im.width, im.height));
+          var cv = document.createElement('canvas');
+          cv.width = Math.round(im.width * sc);
+          cv.height = Math.round(im.height * sc);
+          cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+          IC[key] = { n: n, img: cv.toDataURL('image/png') };
+          saveIC();
+          after();
+        };
+        im.src = ev.target.result;
+      };
+      r.readAsDataURL(f);
+    } else if (p) {
+      IC[key] = { n: n, p: p };
+      saveIC();
+      after();
+    } else {
+      toast('กรุณาอัปโหลดรูปหรือวาง SVG path');
+    }
+  });
+
+  on('#icReset', function () {
+    if (!confirm('คืนค่าไอคอนเริ่มต้น? ไอคอนที่เพิ่มเองจะหายทั้งหมด')) { return; }
+    IC = JSON.parse(JSON.stringify(BASEIC));
+    saveIC();
+    icList();
+    icSelAll();
+    secs();
+    render();
+    toast('คืนค่าไอคอนแล้ว');
+  });
+
+  on('#btnDl', function () {
+    var isPdf = S.format === 'pdf';
+    shot(isPdf, function (cv) {
+      if (isPdf) {
+        var sz = size();
+        var W = sz[0];
+        var H = sz[1];
+        var ori = W > H ? 'landscape' : 'portrait';
+        var doc = new window.jspdf.jsPDF({ orientation: ori, unit: 'px', format: [W, H], compress: true });
+        doc.addImage(cv.toDataURL('image/jpeg', 0.94), 'JPEG', 0, 0, W, H);
+        doc.save(fname() + '.pdf');
+        toast('บันทึก PDF เรียบร้อย');
+        return;
+      }
+      var a = document.createElement('a');
+      a.download = fname() + '.' + S.format;
+      a.href = S.format === 'jpg' ? cv.toDataURL('image/jpeg', 0.95) : cv.toDataURL('image/png');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast('ดาวน์โหลดเรียบร้อย');
+    });
+  });
+
+  on('#btnCopy', function () {
+    shot(false, function (cv) {
+      try {
+        cv.toBlob(function (b) {
+          var item = new ClipboardItem({ 'image/png': b });
+          navigator.clipboard.write([item]).then(function () {
+            toast('คัดลอกแล้ว วางใน LINE หรือ Word ได้เลย');
+          }).catch(function () {
+            toast('เบราว์เซอร์นี้คัดลอกไม่ได้ ใช้ปุ่มบันทึกไฟล์แทน');
+          });
+        });
+      } catch (e) {
+        toast('เบราว์เซอร์นี้คัดลอกไม่ได้ ใช้ปุ่มบันทึกไฟล์แทน');
+      }
+    });
+  });
+
+  on('#btnOpen', function () {
+    shot(false, function (cv) {
+      var w = window.open('');
+      if (w) {
+        w.document.write('<title>' + fname() + '</title><img src="' + cv.toDataURL() + '" style="max-width:100%">');
+      }
+    });
+  });
+
+  on('#btnUndo', function () {
+    if (HIST.length < 2) {
+      toast('ไม่มีขั้นตอนให้ย้อนกลับแล้ว');
+      return;
+    }
+    HIST.pop();
+    var prev = HIST[HIST.length - 1];
+    S = merge(JSON.parse(prev));
+    refreshAll();
+    toast('ย้อนกลับแล้ว');
+  });
+
+  on('#dSave', function () {
+    var n = $('#dName').value.trim();
+    if (!n) {
+      toast('กรุณาตั้งชื่อแบบร่าง');
+      return;
+    }
+    var d = drafts();
+    d[n] = S;
+    try {
+      localStorage.setItem(DK, JSON.stringify(d));
+      dlist();
+      meter();
+      toast('บันทึกแบบร่างแล้ว');
+    } catch (e) {
+      toast('พื้นที่เต็ม ลองลบแบบร่างเก่า');
+    }
+  });
+
+  on('#dLoad', function () {
+    var n = $('#dList').value;
+    if (!n) { return; }
+    S = merge(drafts()[n]);
+    refreshAll();
+    toast('เรียกใช้แบบร่างแล้ว');
+  });
+
+  on('#dDel', function () {
+    var n = $('#dList').value;
+    if (!n) { return; }
+    var d = drafts();
+    delete d[n];
+    try { localStorage.setItem(DK, JSON.stringify(d)); } catch (e) {}
+    dlist();
+    meter();
+    toast('ลบแล้ว');
+  });
+
+  on('#expJ', function () {
+    var data = { state: S, presets: PR, icons: IC };
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fname() + '.json';
+    a.click();
+  });
+
+  on('#impB', function () {
+    var e = $('#impJ');
+    if (e) { e.click(); }
+  });
+
+  var ij = $('#impJ');
+  if (ij) {
+    ij.onchange = function (e) {
+      var f = e.target.files[0];
+      if (!f) { return; }
+      var r = new FileReader();
+      r.onload = function (ev) {
+        try {
+          var o = JSON.parse(ev.target.result);
+          S = merge(o.state || o);
+          if (o.presets) { PR = o.presets; savePR(); }
+          if (o.icons) { IC = o.icons; saveIC(); }
+          refreshAll();
+          toast('นำเข้าข้อมูลแล้ว');
+        } catch (x) {
+          toast('ไฟล์ไม่ถูกต้อง');
+        }
+      };
+      r.readAsText(f);
+    };
+  }
+
+  on('#reset', function () {
+    if (!confirm('ล้างข้อมูลทั้งหมดและเริ่มใหม่?')) { return; }
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    HIST = [];
+    S = merge(null);
+    S.date = new Date().toISOString().slice(0, 10);
+    refreshAll();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      var d = $('#btnDl');
+      if (d) { d.click(); }
+    }
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) {
+      var tag = (e.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea') { return; }
+      e.preventDefault();
+      var u = $('#btnUndo');
+      if (u) { u.click(); }
+    }
+  });
+
+  window.addEventListener('resize', fit);
+}
+
+function init() {
+  loadIC();
+  loadPR();
+  S = merge(null);
+  try {
+    var v = localStorage.getItem(KEY);
+    if (v) { S = merge(JSON.parse(v)); }
+  } catch (e) {
+    S = merge(null);
+  }
+  if (!S.date) { S.date = new Date().toISOString().slice(0, 10); }
+  if (S.fontScale == null) { S.fontScale = 100; }
+  timeSel();
+  wire();
+  refreshAll();
+  meter();
+  setTimeout(fit, 120);
+  setTimeout(fit, 600);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 </script>
 </body>
 </html>
